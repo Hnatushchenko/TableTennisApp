@@ -1,16 +1,11 @@
-﻿using ConsoleApp2;
-using System;
-
-public class Class1
+﻿namespace TableTennisApp.Models
 {
-	public Class1()
-	{
-		static void RatingCount(Player PlayerWhoWon,Player PlayerWhoLost)
-		{
-			PlayerWhoWon.Rating += 30;
-			PlayerWhoLost.Rating -= 27;
-			
-		}
-
-	}
+    public class RatingManager
+    {
+        public static void RatingCount(Player PlayerWhoWon, Player PlayerWhoLost)
+        {
+            PlayerWhoWon.Rating += 30;
+            PlayerWhoLost.Rating -= 27;
+        }
+    }
 }

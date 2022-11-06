@@ -5,7 +5,7 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleApp2
+namespace TableTennisApp.Models
 {
     internal class Queue
     {
@@ -26,13 +26,11 @@ namespace ConsoleApp2
         public void RemoveFirst()
         {
             Players.RemoveAt(0);
-            
         }
         public void RemovePlayer(Player player)
         {
             Player P=Players.First(p=>p.Name==player.Name);
             Players.Remove(P);
-
         }
     }
 }
