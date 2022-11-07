@@ -25,5 +25,16 @@
             Player P=Players.First(p=>p.Name==player.Name);
             Players.Remove(P);
         }
+        public void PutToEnd(Player player)
+        {
+            foreach (var playerInQueue in Players)
+            {
+                if (playerInQueue.Id == player.Id)
+                {
+                    RemovePlayer(playerInQueue);
+                }
+            }
+            Players.Add(player);
+        }
     }
 }
