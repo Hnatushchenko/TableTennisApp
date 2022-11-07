@@ -1,18 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TableTennisApp.Models
 {
-    internal class Game
+    public class Game
     {
         public Guid Id { get; set; }
-        public Player Player1 { get; set; }
-        public Player Player2 { get; set; }
+        [NotMapped]
+        public Player? Player1 { get; set; }
+        public Guid? Player1Id { get; set; }
+        [NotMapped]
+        public Player? Player2 { get; set; }
+        public Guid? Player2Id { get; set; }
         public int Player1Score { get; set; }
         public int Player2Score { get; set; }
-        public DateTime Date { get; set; } = DateTime.Now;
+        public DateTimeOffset Date { get; set; } = DateTimeOffset.Now;
     }
 }

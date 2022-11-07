@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TableTennisApp.Models
+﻿namespace TableTennisApp.Models
 {
-    internal class Queue
+    public class Queue
     {
         public List <Player> Players = new List<Player>();
         public void AddPlayer(Player player)
