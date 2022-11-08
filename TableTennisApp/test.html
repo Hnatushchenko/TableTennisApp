@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Черга на теніс</title>
+    <style>
+        body {
+            margin-right: 50px;
+            margin-left: 20px;
+        }
+        .players-in-queue {
+            margin-bottom: 10px;
+        }
+        .player-box {
+            right: 0;
+            left: 0;
+            margin-right: auto;
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 86%;
+            border: solid;
+            border-width: 1px;
+            padding-top: 10px;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+            border-radius: 3px;
+        }
+        .buttons-box {
+            right: 0;
+            left: 0;
+            margin-right: auto;
+            margin-left: auto;
+            width: 86%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .buttons-box button {
+            width: 50%;
+            height: 30px;
+        }
+        
+        #leave {
+            margin-left: 10px
+        }
+    </style>
+</head>
+<body>
+    <div class="players-in-queue">
+        <div class="player-box">
+            <div class="player-name">
+                Денис Брикайло
+            </div>
+        </div>
+        <div class="player-box">
+            <div class="player-name">
+                Юра Трут
+            </div>
+        </div>
+        <div class="player-box">
+            <div class="player-name">
+                Андрій Гнатущенко
+            </div>
+        </div>
+    </div>
+    <div class="buttons-box">
+        <button id="sign-in">Записатися</button>
+        <button id="leave">Лівнути</button>
+    </div>
+</body>
+</html>
