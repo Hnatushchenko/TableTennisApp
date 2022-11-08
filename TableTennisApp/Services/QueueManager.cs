@@ -1,18 +1,20 @@
-﻿namespace TableTennisApp.Models
+﻿using TableTennisApp.Models;
+
+namespace TableTennisApp.Services
 {
-    public class Queue
+    public class QueueManager
     {
-        public List <Player> Players = new List<Player>();
+        public List<Player> Players = new List<Player>();
         public void AddPlayer(Player player)
         {
-            
+
             for (int i = 0; i < Players.Count; i++)
             {
                 if (Players[i].Name == player.Name)
                 {
                     return;
                 }
-         
+
             }
             Players.Add(player);
         }
@@ -22,7 +24,7 @@
         }
         public void RemovePlayer(Player player)
         {
-            Player P=Players.First(p=>p.Name==player.Name);
+            Player P = Players.First(p => p.Name == player.Name);
             Players.Remove(P);
         }
         public void PutToEnd(Player player)
@@ -31,7 +33,7 @@
             {
                 if (playerInQueue.Id == player.Id)
                 {
-                    RemovePlayer(playerInQueue);
+                    Players.Remove(playerInQueue);
                 }
             }
             Players.Add(player);

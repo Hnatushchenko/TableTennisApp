@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Xml;
 using TableTennisApp.Models;
 
 namespace TableTennisApp.Repository
@@ -16,6 +17,7 @@ namespace TableTennisApp.Repository
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            SaveChangesAsync();
             modelBuilder.Entity<Player>().HasData(
                 new Player
                 {

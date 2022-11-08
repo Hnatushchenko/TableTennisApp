@@ -8,6 +8,6 @@ namespace TableTennisApp.Repository
         DbSet<Game> Games { get; set; }
         DbSet<Player> Players { get; set; }
         int SaveChanges();
-        Task<int> SaveChangesAsync(CancellationToken cancellationToken);
+        Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }
 }
