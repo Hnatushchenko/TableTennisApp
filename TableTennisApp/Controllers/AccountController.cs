@@ -3,6 +3,9 @@ using System.Security.Claims;
 using System;
 using TableTennisApp.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using TableTennisApp.Models;
+using Microsoft.AspNetCore.Authentication;
+using System.Net;
 
 namespace TableTennisApp.Controllers
 {
@@ -22,26 +25,46 @@ namespace TableTennisApp.Controllers
         }
 
         [HttpGet]
-        public IActionResult Login([FromForm] string login, [FromForm] string password)
-        {
-            var claims = new List<Claim> { new Claim(ClaimTypes.Name, login) };
-            ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, "Cookies");
-            ClaimsPrincipal principal = new ClaimsPrincipal(claimsIdentity);
-            SignIn(principal, CookieAuthenticationDefaults.AuthenticationScheme);
-            return Redirect("/");
-        }
-
-        [HttpGet]
         public IActionResult Registration()
         {
             return View();
         }
 
+        [HttpGet]
+        public IActionResult Logout()
+        {
+            ControllerContext.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return Redirect("/");
+        }
+
+
+        [HttpPost]
+        public IActionResult Login([FromForm] string login, [FromForm] string password)
+        {
+            if (string.IsNullOrWhiteSpace(login) || string.IsNullOrWhiteSpace(password))
+            {
+                return Unauthorized();
+            }
+
+            Player? player = _playerService.GetByLogin(login);
+            if (player is null || player.Password != password)
+            {
+                return Unauthorized();
+            }
+
+            var claims = new List<Claim> { new Claim(ClaimTypes.Name, login) };
+            ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            ClaimsPrincipal principal = new ClaimsPrincipal(claimsIdentity);
+            ControllerContext.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+            return Redirect("/");
+        }
+
+        
         [HttpPost]
         public async Task<IActionResult> Registration([FromForm] string name, [FromForm] string login, [FromForm] string password)
         {
             await _playerService.AddAsync(name, login, password);
-            return View();
+            return Redirect("/");
         }
     }
 }

@@ -2,19 +2,28 @@
 
 namespace TableTennisApp.Services
 {
-    public class QueueManager
+    public class QueueManager : IQueueManager
     {
-        public List<Player> Players = new List<Player>();
+        private static List<Player> Players = new List<Player>();
+        private readonly IPlayersService _playersService;
+
+        public QueueManager(IPlayersService playersService)
+        {
+            _playersService = playersService;
+        }
+
+        public IEnumerable<Player> GetAllPlayers()
+        {
+            return Players;
+        }
         public void AddPlayer(Player player)
         {
-
             for (int i = 0; i < Players.Count; i++)
             {
-                if (Players[i].Name == player.Name)
+                if (Players[i].Id == player.Id)
                 {
                     return;
                 }
-
             }
             Players.Add(player);
         }
@@ -24,7 +33,7 @@ namespace TableTennisApp.Services
         }
         public void RemovePlayer(Player player)
         {
-            Player P = Players.First(p => p.Name == player.Name);
+            Player P = Players.First(p => p.Id == player.Id);
             Players.Remove(P);
         }
         public void PutToEnd(Player player)
@@ -37,6 +46,24 @@ namespace TableTennisApp.Services
                 }
             }
             Players.Add(player);
+        }
+        public void RemovePlayerByLogin(string login)
+        {
+            Player? playerToRemove = Players.FirstOrDefault(p => p.Login == login);
+            if (playerToRemove is not null)
+            {
+                Players.Remove(playerToRemove);
+            }
+        }
+        public void AddPlayerByLogin(string login)
+        {
+            Player? playerToAdd = _playersService.GetByLogin(login);
+            if (playerToAdd is null)
+            {
+                throw new ArgumentException("Invalid login");
+            }
+
+            AddPlayer(playerToAdd);
         }
     }
 }

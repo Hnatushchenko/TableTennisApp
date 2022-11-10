@@ -12,12 +12,11 @@ namespace TableTennisApp.Repository
         public ApplicationContext(DbContextOptions<ApplicationContext> options)
         : base(options)
         {
-            Database.EnsureCreated();
+            //Database.EnsureCreated();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            SaveChangesAsync();
             modelBuilder.Entity<Player>().HasData(
                 new Player
                 {

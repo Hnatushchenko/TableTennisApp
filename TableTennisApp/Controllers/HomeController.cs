@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using System.Security.Claims;
 using TableTennisApp.Models;
 
 namespace TableTennisApp.Controllers
@@ -14,9 +15,16 @@ namespace TableTennisApp.Controllers
             _logger = logger;
         }
 
-        [Authorize]
         public IActionResult Index()
         {
+            if (User.Identity is not null && User.Identity.IsAuthenticated)
+            {
+                ViewData["Name"] = User.FindFirst(ClaimTypes.Name).Value;
+            }
+            else
+            {
+                ViewData["Name"] = "Annonymous";
+            }
             return View();
         }
 
