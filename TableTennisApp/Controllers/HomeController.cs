@@ -3,34 +3,31 @@ using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Security.Claims;
 using TableTennisApp.Models;
+using TableTennisApp.Services;
 
 namespace TableTennisApp.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        private readonly IPlayersService _playersService;
+        public HomeController(IPlayersService playersService)
         {
-            _logger = logger;
+            _playersService = playersService;
         }
 
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Index()
         {
             if (User.Identity is not null && User.Identity.IsAuthenticated)
             {
-                ViewData["Name"] = User.FindFirst(ClaimTypes.Name).Value;
+                string? login = User.FindFirst(ClaimTypes.Name)?.Value;
+                if (login is not null)
+                {
+                    Player? player = _playersService.GetByLogin(login);
+                    return View(player);
+                }
             }
-            else
-            {
-                ViewData["Name"] = "Annonymous";
-            }
-            return View();
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
+            return Redirect("/Account/Login");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

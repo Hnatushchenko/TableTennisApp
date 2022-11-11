@@ -16,6 +16,7 @@ namespace TableTennisApp.Controllers
             _queueManager = queueManager;
         }
 
+        [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
         public IActionResult Index()
         {
             var players = _queueManager.GetAllPlayers();
@@ -33,6 +34,7 @@ namespace TableTennisApp.Controllers
                 {
                     throw new ArgumentException("Claim cannot be null");
                 }
+                _queueManager.RemovePlayerByLogin(login.Value);
                 _queueManager.AddPlayerByLogin(login.Value);
                 return Redirect("/Queue/Index"); // TODO: Add default path for Queue controller
             }

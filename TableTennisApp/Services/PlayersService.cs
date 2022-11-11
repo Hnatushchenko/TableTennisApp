@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TableTennisApp.Models;
 using TableTennisApp.Repository;
+using TableTennisApp.Exceptions;
 
 namespace TableTennisApp.Services
 {
@@ -20,12 +21,18 @@ namespace TableTennisApp.Services
 
         public Player? GetByLogin(string login)
         {
-            return _dbContext.Players.FirstOrDefault(p => p.Login == login);
+            return _dbContext.Players.SingleOrDefault(p => p.Login == login);
         }
 
         public async Task AddAsync(string name, string login, string password)
         {
-            Player player = new Player
+            Player? playerInDb = GetByLogin(login);
+            if (playerInDb is not null)
+            {
+                throw new PlayerAlreadyExistsException();
+            }
+
+            Player newPlayer = new Player
             {
                 Id = Guid.NewGuid(),
                 Name = name,
@@ -33,7 +40,7 @@ namespace TableTennisApp.Services
                 Password = password,
                 Rating = 1200
             };
-            _dbContext.Players.Add(player);
+            _dbContext.Players.Add(newPlayer);
             await _dbContext.SaveChangesAsync();
         }
     }

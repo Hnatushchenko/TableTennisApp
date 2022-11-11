@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using TableTennisApp.Models;
 using Microsoft.AspNetCore.Authentication;
 using System.Net;
+using TableTennisApp.Exceptions;
 
 namespace TableTennisApp.Controllers
 {
@@ -39,7 +40,7 @@ namespace TableTennisApp.Controllers
 
 
         [HttpPost]
-        public IActionResult Login([FromForm] string login, [FromForm] string password)
+        public async Task<IActionResult> Login([FromForm] string login, [FromForm] string password)
         {
             if (string.IsNullOrWhiteSpace(login) || string.IsNullOrWhiteSpace(password))
             {
@@ -55,7 +56,7 @@ namespace TableTennisApp.Controllers
             var claims = new List<Claim> { new Claim(ClaimTypes.Name, login) };
             ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             ClaimsPrincipal principal = new ClaimsPrincipal(claimsIdentity);
-            ControllerContext.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+            await ControllerContext.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
             return Redirect("/");
         }
 
@@ -63,7 +64,20 @@ namespace TableTennisApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Registration([FromForm] string name, [FromForm] string login, [FromForm] string password)
         {
-            await _playerService.AddAsync(name, login, password);
+            try
+            {
+                await _playerService.AddAsync(name, login, password);
+            }
+            catch (PlayerAlreadyExistsException)
+            {
+                // TODO: Handle the exception
+                throw;
+            }
+            
+            var claims = new List<Claim> { new Claim(ClaimTypes.Name, login) };
+            ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            ClaimsPrincipal principal = new ClaimsPrincipal(claimsIdentity);
+            await ControllerContext.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
             return Redirect("/");
         }
     }
