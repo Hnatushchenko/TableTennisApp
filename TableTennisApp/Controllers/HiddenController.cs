@@ -7,10 +7,19 @@ namespace TableTennisApp.Controllers
     {
         private readonly IQueueItemService _queueItemService;
         private readonly IPlayersService _playersService;
-        public HiddenController(IPlayersService playersService, IQueueItemService queueItemService)
+        private readonly IGameService _gameService;
+        public HiddenController(IPlayersService playersService, IQueueItemService queueItemService, IGameService gameService)
         {
             _playersService = playersService;
             _queueItemService = queueItemService;
+            _gameService = gameService;
+        }
+
+
+        public IActionResult Games()
+        {
+            var games = _gameService.GetAllGames();
+            return Json(games);
         }
 
         public IActionResult Players()

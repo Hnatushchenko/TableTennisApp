@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
+using TableTennisApp.Models;
 using TableTennisApp.Repository;
 using TableTennisApp.Services;
 
@@ -28,7 +29,9 @@ namespace TableTennisApp
             string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
             builder.Services.AddTransient<IPlayersService, PlayersService>();
             builder.Services.AddTransient<IQueueManager, QueueManager>();
+            builder.Services.AddTransient<IGameService, GameService>();
             builder.Services.AddTransient<IQueueItemService, QueueItemService>();
+            builder.Services.AddTransient<IRatingManager, RatingManager>();
             builder.Services.AddDbContext<ApplicationContext>(options => options.UseNpgsql(connectionString));
             builder.Services.AddScoped<IApplicationContext>(provider => provider.GetRequiredService<ApplicationContext>());
 

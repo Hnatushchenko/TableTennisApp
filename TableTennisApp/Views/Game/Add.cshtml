@@ -1,0 +1,100 @@
+﻿@model IEnumerable<Player>
+
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Додавання гри</title>
+    <style>
+        body {
+            background-color: white;
+        }
+        .content {
+            width: 500px;
+            background-color: #FBFBFB;
+            padding-top: 15px;
+            padding-bottom: 20px;
+            border-radius: 6px;
+            width: 100%;
+        }
+        label {
+            color: #5F6B7E;
+            margin-bottom: 5px;
+        }
+        main-content {
+            display: flex;
+            justify-content: center;
+            padding-top: 5px;
+        }
+        #submit-button {
+            margin-top: 10px;
+            margin-bottom: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            color: white;
+            text-align: left;
+            padding-left: 5px;
+            padding-right: 5px;
+            height: 30px;
+            border-radius: 6px;
+            border: none;
+            background-color: #04AA6D;
+        }
+        #submit-button:hover {
+            background-color: #059862;
+        }
+        .title {
+            display: flex;
+            justify-content: center;
+        }
+        form {
+            padding-left: 20px;
+            padding-right: 60px;
+        }
+        h1 {
+            font-size: 30px;
+        }
+    </style>
+    <script>
+
+    </script>
+</head>
+<body>
+    <div class="main-content">
+        <div class="content">
+            <div class="title">
+                <h1>
+                    Додавання гри
+                </h1>
+            </div>
+            <form method="post" autocomplete="off">
+                <div>
+                    <label>Вкажіть результат гри:</label>
+                    <div>
+                        <input type="radio" id="@GameResult.Victory" name="gameResult" value="@GameResult.Victory" checked>
+                        <label for="@GameResult.Victory">Я виграв</label>
+                    </div>
+                    <div>
+                        <input type="radio" id="@GameResult.Loss" name="gameResult" value="@GameResult.Loss" >
+                        <label for="@GameResult.Loss">Я програв</label>
+                    </div>
+                </div>
+                <div>
+                    <label for="opponent">Вкажіть вашого суперника:</label>
+                    <select id="opponent" name="opponentLogin" required>
+                        @foreach (Player player in @Model)
+                        {
+                            <option value="@player.Login">@player.Name</option>
+                        }
+                    </select>
+                </div>
+                <button id="submit-button" type="submit">
+                    <span style="margin: 4px 10px;">Додати</span>
+                </button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,6 +1,8 @@
-﻿namespace TableTennisApp.Models
+﻿using TableTennisApp.Repository;
+
+namespace TableTennisApp.Models
 {
-    public class RatingManager
+    public class RatingManager : IRatingManager
     {
         public void CalculateNewRating(Player playerWhoWon, Player playerWhoLost)
         {

@@ -6,13 +6,10 @@ namespace TableTennisApp.Models
     {
         public Guid Id { get; set; }
         [NotMapped]
-        public Player? Player1 { get; set; }
-        public Guid? Player1Id { get; set; }
+        public Player? PlayerWhoWon { get; set; }
+        public Guid? PlayerWhoWonId { get; set; }
         [NotMapped]
-        public Player? Player2 { get; set; }
-        public Guid? Player2Id { get; set; }
-        public int Player1Score { get; set; }
-        public int Player2Score { get; set; }
-        public DateTimeOffset Date { get; set; } = DateTimeOffset.Now;
+        public Player? PlayerWhoLost { get; set; }
+        public Guid? PlayerWhoLostId { get; set; }
     }
 }
