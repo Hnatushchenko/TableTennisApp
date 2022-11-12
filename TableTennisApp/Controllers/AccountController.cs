@@ -44,13 +44,15 @@ namespace TableTennisApp.Controllers
         {
             if (string.IsNullOrWhiteSpace(login) || string.IsNullOrWhiteSpace(password))
             {
-                return Unauthorized();
+                return Redirect("/Account/Login"); // TODO: Send the message, wrong password
             }
 
+            login = login.Trim();
+            password = password.Trim();
             Player? player = _playerService.GetByLogin(login);
             if (player is null || player.Password != password)
             {
-                return Unauthorized();
+                return Redirect("/Account/Login"); // TODO: Send the message, wrong password
             }
 
             var claims = new List<Claim> { new Claim(ClaimTypes.Name, login) };

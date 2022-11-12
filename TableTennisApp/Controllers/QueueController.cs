@@ -7,25 +7,22 @@ namespace TableTennisApp.Controllers
 {
     public class QueueController : Controller
     {
-        private readonly IPlayersService _playersService;
         private readonly IQueueManager _queueManager;
 
-        public QueueController(IPlayersService playersService, IQueueManager queueManager)
+        public QueueController(IQueueManager queueManager)
         {
-            _playersService = playersService;
             _queueManager = queueManager;
         }
 
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
         public IActionResult Index()
         {
-            var players = _queueManager.GetAllPlayers();
+            var players = _queueManager.GetAllPlayers().ToList();
             return View(players);
         }
-
         
         [HttpGet]
-        public IActionResult Enter()
+        public async Task<IActionResult> Enter()
         {
             if (User.Identity is not null && User.Identity.IsAuthenticated)
             {
@@ -34,8 +31,7 @@ namespace TableTennisApp.Controllers
                 {
                     throw new ArgumentException("Claim cannot be null");
                 }
-                _queueManager.RemovePlayerByLogin(login.Value);
-                _queueManager.AddPlayerByLogin(login.Value);
+                await _queueManager.EnterByLoginAsync(login.Value);
                 return Redirect("/Queue/Index"); // TODO: Add default path for Queue controller
             }
             else
@@ -45,7 +41,7 @@ namespace TableTennisApp.Controllers
         }
 
         [HttpGet]
-        public IActionResult Leave()
+        public async Task<IActionResult> Leave()
         {
             if (User.Identity is not null && User.Identity.IsAuthenticated)
             {
@@ -54,7 +50,7 @@ namespace TableTennisApp.Controllers
                 {
                     throw new ArgumentException("Claim cannot be null");
                 }
-                _queueManager.RemovePlayerByLogin(login.Value);
+                await _queueManager.LeaveByLoginAsync(login.Value);
                 return Redirect("/Queue/Index"); // TODO: Add default path for Queue controller
             }
             else

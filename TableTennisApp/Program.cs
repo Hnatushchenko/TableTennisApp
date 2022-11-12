@@ -28,7 +28,8 @@ namespace TableTennisApp
             string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
             builder.Services.AddTransient<IPlayersService, PlayersService>();
             builder.Services.AddTransient<IQueueManager, QueueManager>();
-            builder.Services.AddDbContext<ApplicationContext>(options => options.UseSqlServer(connectionString));
+            builder.Services.AddTransient<IQueueItemService, QueueItemService>();
+            builder.Services.AddDbContext<ApplicationContext>(options => options.UseNpgsql(connectionString));
             builder.Services.AddScoped<IApplicationContext>(provider => provider.GetRequiredService<ApplicationContext>());
 
             var app = builder.Build();

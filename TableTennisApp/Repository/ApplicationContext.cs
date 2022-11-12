@@ -8,22 +8,12 @@ namespace TableTennisApp.Repository
     {
         public DbSet<Player> Players { get; set; } = null!;
         public DbSet<Game> Games { get; set; } = null!;
+        public DbSet<QueueItem> QueueItems { get; set; } = null!;
 
         public ApplicationContext(DbContextOptions<ApplicationContext> options)
         : base(options)
         {
-            //Database.EnsureCreated();
-        }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<Player>().HasData(
-                new Player
-                {
-                    Id = Guid.NewGuid(),
-                    Name = "Andrii Hnatushchenko",
-                    Rating = 1200
-                });
+            Database.EnsureCreated();
         }
     }
 }

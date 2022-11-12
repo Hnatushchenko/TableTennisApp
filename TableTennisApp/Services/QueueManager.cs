@@ -4,66 +4,58 @@ namespace TableTennisApp.Services
 {
     public class QueueManager : IQueueManager
     {
-        private static List<Player> Players = new List<Player>();
+        private readonly IQueueItemService _queueItemService;
         private readonly IPlayersService _playersService;
 
-        public QueueManager(IPlayersService playersService)
+        public QueueManager(IPlayersService playersService, IQueueItemService queueItemService)
         {
             _playersService = playersService;
+            _queueItemService = queueItemService;
         }
 
         public IEnumerable<Player> GetAllPlayers()
         {
-            return Players;
+            return _queueItemService.GetPlayersFromQueue();
         }
-        public void AddPlayer(Player player)
+        public async Task LeaveByLoginAsync(string login)
         {
-            for (int i = 0; i < Players.Count; i++)
+            var queueItem = _queueItemService.GetQueueItems().
+                SingleOrDefault(queueItem => queueItem.Player.Login == login);
+
+            if (queueItem is null)
             {
-                if (Players[i].Id == player.Id)
-                {
-                    return;
-                }
+                return;
             }
-            Players.Add(player);
+            await _queueItemService.RemoveByIdAsync(queueItem.Id);
+
         }
-        public void RemoveFirst()
+        public async Task EnterByLoginAsync(string login)
         {
-            Players.RemoveAt(0);
-        }
-        public void RemovePlayer(Player player)
-        {
-            Player P = Players.First(p => p.Id == player.Id);
-            Players.Remove(P);
-        }
-        public void PutToEnd(Player player)
-        {
-            foreach (var playerInQueue in Players)
-            {
-                if (playerInQueue.Id == player.Id)
-                {
-                    Players.Remove(playerInQueue);
-                }
-            }
-            Players.Add(player);
-        }
-        public void RemovePlayerByLogin(string login)
-        {
-            Player? playerToRemove = Players.FirstOrDefault(p => p.Login == login);
-            if (playerToRemove is not null)
-            {
-                Players.Remove(playerToRemove);
-            }
-        }
-        public void AddPlayerByLogin(string login)
-        {
+
             Player? playerToAdd = _playersService.GetByLogin(login);
             if (playerToAdd is null)
             {
                 throw new ArgumentException("Invalid login");
             }
 
-            AddPlayer(playerToAdd);
+            await LeaveByLoginAsync(login);
+            int maxOrdinalNumber = 1;
+            try
+            {
+                maxOrdinalNumber = _queueItemService.GetQueueItems().Max(queueItem => queueItem.OrdinalNumber);
+            }
+            catch (Exception)
+            {
+            }
+
+            QueueItem queueItem = new QueueItem()
+            {
+                Id = Guid.NewGuid(),
+                OrdinalNumber = maxOrdinalNumber + 1,
+                PlayerId = playerToAdd.Id,
+            };
+
+            await _queueItemService.AddAsync(queueItem);
         }
     }
 }

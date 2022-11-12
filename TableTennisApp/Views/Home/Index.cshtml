@@ -1,7 +1,7 @@
 ﻿@model Player
 
 <div class="text-center">
-    <div>Ім'я: @Model.Name</div>
-    <div>Рейтинг: @Model.Rating</div>
-    <div>Кількість ігор: @Model.TotalGames</div>
+    <div>Ім'я: @Model?.Name</div>
+    <div>Рейтинг: @Model?.Rating</div>
+    <div>Кількість ігор: @Model?.TotalGames</div>
 </div>
