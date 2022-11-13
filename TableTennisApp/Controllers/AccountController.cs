@@ -68,7 +68,7 @@ namespace TableTennisApp.Controllers
         {
             try
             {
-                await _playerService.AddAsync(name, login, password);
+                await _playerService.AddAsync(name, login.Trim(), password.Trim());
             }
             catch (PlayerAlreadyExistsException)
             {

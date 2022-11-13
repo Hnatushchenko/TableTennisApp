@@ -4,6 +4,7 @@ namespace TableTennisApp.Services
 {
     public interface IQueueItemService
     {
+        Task ClearAsync();
         Task AddAsync(QueueItem queueItem);
         IEnumerable<QueueItem> GetQueueItems();
         IEnumerable<Player> GetPlayersFromQueue();

@@ -23,7 +23,8 @@ namespace TableTennisApp
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
                 {
-                    options.ExpireTimeSpan = TimeSpan.FromDays(1);
+                    options.ExpireTimeSpan = TimeSpan.FromDays(365);
+                    options.Cookie.MaxAge = TimeSpan.FromDays(365);
                 });
 
             string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");

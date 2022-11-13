@@ -50,7 +50,16 @@
             width: 50%;
             height: 30px;
         }
-
+        h5 {
+            right: 0;
+            left: 0;
+            margin-right: auto;
+            margin-left: auto;
+            width: 86%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
         #leave {
             margin-left: 10px
         }
@@ -67,6 +76,7 @@
 </head>
 <body>
     <div class="players-in-queue">
+        <h5>Записуйтеся тільки у клубі!</h5>
         @foreach (Player player in @Model)
         {
             <div class="player-box">

@@ -18,6 +18,15 @@ namespace TableTennisApp.Services
             return _dbContext.QueueItems.Include(i => i.Player);
         }
 
+        public async Task ClearAsync()
+        {
+            foreach (QueueItem queueItem in _dbContext.QueueItems)
+            {
+                _dbContext.QueueItems.Remove(queueItem);
+            }
+            await _dbContext.SaveChangesAsync();
+        }
+
         public IEnumerable<Player> GetPlayersFromQueue()
         {
             return _dbContext.QueueItems

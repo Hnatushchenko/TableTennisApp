@@ -20,7 +20,14 @@ namespace TableTennisApp.Controllers
             var players = _queueManager.GetAllPlayers().ToList();
             return View(players);
         }
-        
+
+        [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
+        public async Task<IActionResult> Clear()
+        {
+            await _queueManager.ClearAsync();
+            return Redirect("/Queue/Index");
+        }
+
         [HttpGet]
         public async Task<IActionResult> Enter()
         {

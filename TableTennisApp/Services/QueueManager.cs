@@ -12,7 +12,10 @@ namespace TableTennisApp.Services
             _playersService = playersService;
             _queueItemService = queueItemService;
         }
-
+        public async Task ClearAsync()
+        {
+            await _queueItemService.ClearAsync();
+        }
         public IEnumerable<Player> GetAllPlayers()
         {
             return _queueItemService.GetPlayersFromQueue();
