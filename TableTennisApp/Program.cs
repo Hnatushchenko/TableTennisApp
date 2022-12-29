@@ -33,7 +33,7 @@ namespace TableTennisApp
             builder.Services.AddTransient<IGameService, GameService>();
             builder.Services.AddTransient<IQueueItemService, QueueItemService>();
             builder.Services.AddTransient<IRatingManager, RatingManager>();
-            builder.Services.AddDbContext<ApplicationContext>(options => options.UseNpgsql(connectionString));
+            builder.Services.AddDbContext<ApplicationContext>(options => options.UseSqlServer(connectionString));
             builder.Services.AddScoped<IApplicationContext>(provider => provider.GetRequiredService<ApplicationContext>());
 
             var app = builder.Build();
