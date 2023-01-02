@@ -49,6 +49,7 @@
             border-width: 1px;
             width: 50%;
             height: 30px;
+            max-width: 200px;
         }
         h5 {
             right: 0;
@@ -76,7 +77,9 @@
 </head>
 <body>
     <div class="players-in-queue">
-        <h5>Записуйтеся тільки у клубі!</h5>
+        @if (@Model.Count() == 0) {
+            <h5>Черга порожня.</h5>
+        }
         @foreach (Player player in @Model)
         {
             <div class="player-box">
@@ -88,7 +91,7 @@
     </div>
     <div class="buttons-box">
         <button id="sign-in" onclick="enterQueue()">Записатися</button>
-        <button id="leave" onclick="leaveQueue()">Лівнути</button>
+        <button id="leave" onclick="leaveQueue()">Покинути чергу</button>
     </div>
 </body>
 </html>
