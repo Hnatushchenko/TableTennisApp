@@ -2,6 +2,6 @@
 {
     public interface IRatingManager
     {
-        void CalculateNewRating(Player playerWhoWon, Player playerWhoLost);
+        void CalculateNewRating(ApplicationUser playerWhoWon, ApplicationUser playerWhoLost);
     }
 }

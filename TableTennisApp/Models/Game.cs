@@ -7,11 +7,11 @@ namespace TableTennisApp.Models
         public Guid Id { get; set; }
 
         public Guid WinnerId { get; set; }
-        [ForeignKey("WinnerId")]
-        public Player? Winner { get; set; }
+        [NotMapped]
+        public ApplicationUser? Winner { get; set; }
 
         public Guid LoserId { get; set; }
-        [ForeignKey("LoserId")]
-        public Player? Loser { get; set; }
+        [NotMapped]
+        public ApplicationUser? Loser { get; set; }
     }
 }

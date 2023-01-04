@@ -1,12 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using System.Xml;
 using TableTennisApp.Models;
 
 namespace TableTennisApp.Repository
 {
-    public class ApplicationContext : DbContext, IApplicationContext
+    public class ApplicationContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>, IApplicationContext
     {
-        public DbSet<Player> Players { get; set; } = null!;
+        public DbSet<ApplicationUser> Players { get; set; } = null!;
         public DbSet<Game> Games { get; set; } = null!;
         public DbSet<QueueItem> QueueItems { get; set; } = null!;
 
@@ -14,6 +16,13 @@ namespace TableTennisApp.Repository
         : base(options)
         {
             Database.EnsureCreated();
+        }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+
+            builder.Entity<ApplicationUser>().Property(p => p.Id).ValueGeneratedOnAdd();
         }
     }
 }

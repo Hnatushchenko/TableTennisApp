@@ -27,7 +27,7 @@ namespace TableTennisApp.Services
             await _dbContext.SaveChangesAsync();
         }
 
-        public IEnumerable<Player> GetPlayersFromQueue()
+        public IEnumerable<ApplicationUser> GetPlayersFromQueue()
         {
             return _dbContext.QueueItems
                 .Include(i => i.Player)

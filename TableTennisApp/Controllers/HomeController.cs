@@ -23,7 +23,7 @@ namespace TableTennisApp.Controllers
                 string? login = User.FindFirst(ClaimTypes.Name)?.Value;
                 if (login is not null)
                 {
-                    Player? player = _playersService.GetByLogin(login);
+                    ApplicationUser? player = _playersService.GetByLogin(login);
                     return View(player);
                 }
             }

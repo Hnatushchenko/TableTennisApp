@@ -7,7 +7,7 @@ namespace TableTennisApp.Services
         Task ClearAsync();
         Task AddAsync(QueueItem queueItem);
         IEnumerable<QueueItem> GetQueueItems();
-        IEnumerable<Player> GetPlayersFromQueue();
+        IEnumerable<ApplicationUser> GetPlayersFromQueue();
         Task RemoveByIdAsync(Guid id);
     }
 }

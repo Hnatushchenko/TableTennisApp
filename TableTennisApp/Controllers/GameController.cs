@@ -32,8 +32,8 @@ namespace TableTennisApp.Controllers
 
                 string currentUserLogin = User.FindFirstValue(ClaimTypes.Name);
                 var players = _playersService.GetAllPlayers()
-                    .Where(p => p.Login != currentUserLogin)
-                    .OrderBy(p => p.Name);
+                    .Where(p => p.Email != currentUserLogin)
+                    .OrderBy(p => p.UserName);
 
                 return View(players);
             }

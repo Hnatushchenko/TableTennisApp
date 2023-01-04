@@ -4,8 +4,8 @@ namespace TableTennisApp.Services
 {
     public interface IPlayersService
     {
-        IEnumerable<Player> GetAllPlayers();
+        IEnumerable<ApplicationUser> GetAllPlayers();
         Task AddAsync(string name, string login, string password);
-        Player? GetByLogin(string login);
+        ApplicationUser? GetByLogin(string login);
     }
 }

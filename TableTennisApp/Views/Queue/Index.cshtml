@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Player>
+﻿@model IEnumerable<ApplicationUser>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -80,11 +80,11 @@
         @if (@Model.Count() == 0) {
             <h5>Черга порожня.</h5>
         }
-        @foreach (Player player in @Model)
+        @foreach (ApplicationUser player in @Model)
         {
             <div class="player-box">
                 <div class="player-name">
-                    @player.Name
+                    @player.UserName
                 </div>
             </div>
         }

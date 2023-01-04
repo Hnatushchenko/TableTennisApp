@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Player>
+﻿@model IEnumerable<ApplicationUser>
 
 <!DOCTYPE html>
 <html lang="uk">
@@ -84,9 +84,9 @@
                 <div>
                     <label for="opponent">Вкажіть вашого суперника:</label>
                     <select id="opponent" name="opponentLogin" required>
-                        @foreach (Player player in @Model)
+                        @foreach (ApplicationUser player in @Model)
                         {
-                            <option value="@player.Login">@player.Name</option>
+                            <option value="@player.Email">@player.UserName</option>
                         }
                     </select>
                 </div>

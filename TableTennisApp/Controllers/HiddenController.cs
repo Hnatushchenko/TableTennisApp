@@ -33,8 +33,8 @@ namespace TableTennisApp.Controllers
             {
                 q.Id,
                 q.OrdinalNumber,
-                q.Player.Name,
-                q.Player.Login
+                q.Player.UserName,
+                q.Player.Email
             }));
         }
     }

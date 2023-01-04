@@ -2,7 +2,7 @@
 
 namespace TableTennisApp.Models
 {
-    public class Player : IdentityUser<Guid>
+    public class ApplicationUser : IdentityUser<Guid>
     {
         public int Rating { get; set; }
         public int TotalNumberOfGames { get; set; }

@@ -16,26 +16,26 @@ namespace TableTennisApp.Services
         {
             await _queueItemService.ClearAsync();
         }
-        public IEnumerable<Player> GetAllPlayers()
+        public IEnumerable<ApplicationUser> GetAllPlayers()
         {
             return _queueItemService.GetPlayersFromQueue();
         }
         public async Task LeaveByLoginAsync(string login)
         {
-            var queueItem = _queueItemService.GetQueueItems().
-                SingleOrDefault(queueItem => queueItem.Player.Login == login);
+            //var queueItem = _queueItemService.GetQueueItems().
+            //    SingleOrDefault(queueItem => queueItem.Player.Login == login);
 
-            if (queueItem is null)
-            {
-                return;
-            }
-            await _queueItemService.RemoveByIdAsync(queueItem.Id);
+            //if (queueItem is null)
+            //{
+            //    return;
+            //}
+            //await _queueItemService.RemoveByIdAsync(queueItem.Id);
 
         }
         public async Task EnterByLoginAsync(string login)
         {
 
-            Player? playerToAdd = _playersService.GetByLogin(login);
+            ApplicationUser? playerToAdd = _playersService.GetByLogin(login);
             if (playerToAdd is null)
             {
                 throw new ArgumentException("Invalid login");
