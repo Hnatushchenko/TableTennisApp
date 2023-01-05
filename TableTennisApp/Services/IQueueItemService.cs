@@ -9,5 +9,7 @@ namespace TableTennisApp.Services
         IEnumerable<QueueItem> GetQueueItems();
         IEnumerable<ApplicationUser> GetPlayersFromQueue();
         Task RemoveByIdAsync(Guid id);
+        Task<int> GetMaxOrdinalNumberAsync();
+        Task RemoveByUserIdAsync(Guid id);
     }
 }

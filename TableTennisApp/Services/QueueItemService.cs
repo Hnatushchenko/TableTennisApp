@@ -18,6 +18,16 @@ namespace TableTennisApp.Services
             return _dbContext.QueueItems.Include(i => i.Player);
         }
 
+        public async Task<int> GetMaxOrdinalNumberAsync()
+        {
+            if (await _dbContext.QueueItems.AnyAsync())
+            {
+                int maxOrdinalNumber = await _dbContext.QueueItems.MaxAsync(item => item.OrdinalNumber);
+                return maxOrdinalNumber;
+            }
+            return 0;
+        }
+
         public async Task ClearAsync()
         {
             foreach (QueueItem queueItem in _dbContext.QueueItems)
@@ -39,7 +49,6 @@ namespace TableTennisApp.Services
         {
             _dbContext.QueueItems.Add(queueItem);
             await _dbContext.SaveChangesAsync();
-            var items = _dbContext.QueueItems.ToList();
         }
 
         public async Task RemoveByIdAsync(Guid id)
@@ -47,6 +56,16 @@ namespace TableTennisApp.Services
             var item = _dbContext.QueueItems.Single(q => q.Id == id);
             _dbContext.QueueItems.Remove(item);
             await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task RemoveByUserIdAsync(Guid id)
+        {
+            var item = await _dbContext.QueueItems.SingleOrDefaultAsync(q => q.PlayerId == id);
+            if (item is not null)
+            {
+                _dbContext.QueueItems.Remove(item);
+                await _dbContext.SaveChangesAsync();
+            }
         }
     }
 }

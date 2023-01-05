@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
+using TableTennisApp.Data.Constants;
 using TableTennisApp.Models;
 using TableTennisApp.Repository;
 using TableTennisApp.Services;
@@ -12,7 +13,7 @@ namespace TableTennisApp
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -22,15 +23,26 @@ namespace TableTennisApp
                 options.JsonSerializerOptions.WriteIndented = true;
             });
 
-            builder.Services.AddIdentity<ApplicationUser, IdentityRole<Guid>>(options =>
+            builder.Services.AddScoped<RoleManager<IdentityRole<Guid>>>();
+
+            IdentityBuilder identityBuilder = builder.Services.AddIdentity<ApplicationUser, IdentityRole<Guid>>(options =>
             {
+                options.User.RequireUniqueEmail = true;
+                options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789¿‡¡·¬‚√„•¥ƒ‰≈Â™∫∆Ê«Á»Ë≤≥Øø…È ÍÀÎÃÏÕÌŒÓœÔ–—Ò“Ú”Û‘Ù’ı÷ˆ◊˜ÿ¯Ÿ˘¸ﬁ˛ﬂˇ-._ ";
+
                 options.Password.RequireDigit = false;
                 options.Password.RequireLowercase = false;
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireUppercase = false;
                 options.Password.RequiredLength = 5;
                 options.Password.RequiredUniqueChars = 0;
-            }).AddEntityFrameworkStores<ApplicationContext>();
+
+            }).AddEntityFrameworkStores<ApplicationContext>().AddRoleManager<RoleManager<IdentityRole<Guid>>>();
+
+            //identityBuilder = new IdentityBuilder(identityBuilder.UserType, typeof(IdentityRole<Guid>), identityBuilder.Services);
+            //identityBuilder;
+            //identityBuilder.AddSignInManager<SignInManager<ApplicationUser>>();
+            //identityBuilder.AddRoleManager<RoleManager<IdentityRole<Guid>>>();
 
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
@@ -50,7 +62,8 @@ namespace TableTennisApp
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
+            await CreateRolesAsync(app.Services);
+
             if (!app.Environment.IsDevelopment())
             {
                 app.UseHsts();
@@ -61,14 +74,54 @@ namespace TableTennisApp
 
             app.UseRouting();
 
-            app.UseAuthorization();
             app.UseAuthentication();
+            app.UseAuthorization();
+            
 
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
 
             app.Run();
+        }
+
+        private static async Task CreateRolesAsync(IServiceProvider serviceProvider)
+        {
+            using (var scope = serviceProvider.CreateScope())
+            {
+
+                var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
+                var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+                string[] roleNames = { UserRoles.Admin, UserRoles.User };
+                IdentityResult roleResult;
+
+                foreach (var roleName in roleNames)
+                {
+                    var roleExists = await roleManager.RoleExistsAsync(roleName);
+                    if (!roleExists)
+                    {
+                        roleResult = await roleManager.CreateAsync(new IdentityRole<Guid>(roleName));
+                    }
+                }
+
+                var admin = new ApplicationUser
+                {
+                    UserName = "¿Ì‰≥È √Ì‡ÚÛ˘ÂÌÍÓ",
+                    Email = "gnatushenko.andrij@gmail.com",
+                };
+
+                string adminPassword = "123123Aa";
+                var _user = await userManager.FindByEmailAsync(admin.Email);
+
+                if (_user == null)
+                {
+                    var createPowerUser = await userManager.CreateAsync(admin, adminPassword);
+                    if (createPowerUser.Succeeded)
+                    {
+                        await userManager.AddToRoleAsync(admin, UserRoles.Admin);
+                    }
+                }
+            }
         }
     }
 }

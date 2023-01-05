@@ -1,59 +1,40 @@
-﻿using TableTennisApp.Models;
+﻿using Microsoft.AspNetCore.Identity;
+using TableTennisApp.Models;
 
 namespace TableTennisApp.Services
 {
     public class QueueManager : IQueueManager
     {
         private readonly IQueueItemService _queueItemService;
-        private readonly IPlayersService _playersService;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public QueueManager(IPlayersService playersService, IQueueItemService queueItemService)
+        public QueueManager(IQueueItemService queueItemService, UserManager<ApplicationUser> userManager)
         {
-            _playersService = playersService;
             _queueItemService = queueItemService;
+            _userManager = userManager;
         }
-        public async Task ClearAsync()
+        public Task ClearAsync()
         {
-            await _queueItemService.ClearAsync();
+            return _queueItemService.ClearAsync();
         }
         public IEnumerable<ApplicationUser> GetAllPlayers()
         {
             return _queueItemService.GetPlayersFromQueue();
         }
-        public async Task LeaveByLoginAsync(string login)
+        public async Task LeaveByEmailAsync(string email)
         {
-            //var queueItem = _queueItemService.GetQueueItems().
-            //    SingleOrDefault(queueItem => queueItem.Player.Login == login);
-
-            //if (queueItem is null)
-            //{
-            //    return;
-            //}
-            //await _queueItemService.RemoveByIdAsync(queueItem.Id);
-
+            var user = await _userManager.FindByEmailAsync(email);
+            await _queueItemService.RemoveByUserIdAsync(user.Id);
         }
-        public async Task EnterByLoginAsync(string login)
+        public async Task EnterByEmailAsync(string email)
         {
+            ApplicationUser? playerToAdd = await _userManager.FindByEmailAsync(email);
 
-            ApplicationUser? playerToAdd = _playersService.GetByLogin(login);
-            if (playerToAdd is null)
-            {
-                throw new ArgumentException("Invalid login");
-            }
-
-            await LeaveByLoginAsync(login);
-            int maxOrdinalNumber = 1;
-            try
-            {
-                maxOrdinalNumber = _queueItemService.GetQueueItems().Max(queueItem => queueItem.OrdinalNumber);
-            }
-            catch (Exception)
-            {
-            }
-
+            await _queueItemService.RemoveByUserIdAsync(playerToAdd.Id);
+            int maxOrdinalNumber = await _queueItemService.GetMaxOrdinalNumberAsync();
+            
             QueueItem queueItem = new QueueItem()
             {
-                Id = Guid.NewGuid(),
                 OrdinalNumber = maxOrdinalNumber + 1,
                 PlayerId = playerToAdd.Id,
             };

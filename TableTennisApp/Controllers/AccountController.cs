@@ -66,7 +66,7 @@ namespace TableTennisApp.Controllers
                 return View(loginVM);
             }
 
-            var signingInResult = await _signInManager.PasswordSignInAsync(user, loginVM.Password, false, false);
+            var signingInResult = await _signInManager.PasswordSignInAsync(user, loginVM.Password, true, false);
             if (signingInResult.Succeeded)
             {
                 return Redirect("/");

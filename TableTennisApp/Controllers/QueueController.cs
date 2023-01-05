@@ -5,6 +5,7 @@ using TableTennisApp.Services;
 
 namespace TableTennisApp.Controllers
 {
+
     public class QueueController : Controller
     {
         private readonly IQueueManager _queueManager;
@@ -28,42 +29,31 @@ namespace TableTennisApp.Controllers
             return Redirect("/Queue/Index");
         }
 
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> Enter()
         {
-            if (User.Identity is not null && User.Identity.IsAuthenticated)
+            Claim? email = User.FindFirst(ClaimTypes.Email);
+            if (email == null)
             {
-                Claim? login = User.FindFirst(ClaimTypes.Name);
-                if (login == null)
-                {
-                    throw new ArgumentException("Claim cannot be null");
-                }
-                await _queueManager.EnterByLoginAsync(login.Value);
-                return Redirect("/Queue/Index"); // TODO: Add default path for Queue controller
+                throw new ArgumentException("Claim cannot be null");
             }
-            else
-            {
-                return Redirect("/Account/Login");
-            }
+            await _queueManager.EnterByEmailAsync(email.Value);
+            return Redirect("/Queue/Index"); // TODO: Add default path for Queue controller
         }
 
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> Leave()
         {
-            if (User.Identity is not null && User.Identity.IsAuthenticated)
+            Claim? login = User.FindFirst(ClaimTypes.Email);
+            if (login == null)
             {
-                Claim? login = User.FindFirst(ClaimTypes.Name);
-                if (login == null)
-                {
-                    throw new ArgumentException("Claim cannot be null");
-                }
-                await _queueManager.LeaveByLoginAsync(login.Value);
-                return Redirect("/Queue/Index"); // TODO: Add default path for Queue controller
+                throw new ArgumentException("Claim cannot be null");
             }
-            else
-            {
-                return Redirect("/Account/Login");
-            }
+            await _queueManager.LeaveByEmailAsync(login.Value);
+            return Redirect("/Queue/Index"); // TODO: Add default path for Queue controller
+            
         }
     }
 }
