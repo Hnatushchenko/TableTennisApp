@@ -10,6 +10,8 @@ using TableTennisApp.Exceptions;
 using Microsoft.AspNetCore.Identity;
 using TableTennisApp.Data.ViewModels;
 using TableTennisApp.Data.Constants;
+using System.Numerics;
+using System.Runtime.InteropServices;
 
 namespace TableTennisApp.Controllers
 {
@@ -39,34 +41,39 @@ namespace TableTennisApp.Controllers
         }
 
         [HttpGet]
-        public IActionResult Logout()
+        public async Task<IActionResult> Logout()
         {
-            ControllerContext.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            await _signInManager.SignOutAsync();
             return Redirect("/");
         }
 
-
         [HttpPost]
-        public async Task<IActionResult> Login([FromForm] string login, [FromForm] string password)
+        public async Task<IActionResult> Login(LoginVM loginVM)
         {
-            //if (string.IsNullOrWhiteSpace(login) || string.IsNullOrWhiteSpace(password))
-            //{
-            //    return Redirect("/Account/Login"); // TODO: Send the message, wrong password
-            //}
+            if (!ModelState.IsValid) return View(loginVM);
 
-            //login = login.Trim();
-            //password = password.Trim();
-            //Player? player = _playerService.GetByLogin(login);
-            //if (player is null || player.Password != password)
-            //{
-            //    return Redirect("/Account/Login"); // TODO: Send the message, wrong password
-            //}
+            var user = await _userManager.FindByEmailAsync(loginVM.Email);
+            if (user == null)
+            {
+                TempData["Error"] = "Не вдалося знайти ваш обліковий запис.";
+                return View(loginVM);
+            }
 
-            //var claims = new List<Claim> { new Claim(ClaimTypes.Name, login) };
-            //ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            //ClaimsPrincipal principal = new ClaimsPrincipal(claimsIdentity);
-            //await ControllerContext.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
-            return Redirect("/");
+            var passwordIsValid = await _userManager.CheckPasswordAsync(user, loginVM.Password);
+            if (passwordIsValid == false)
+            {
+                TempData["Error"] = "Неправильний пароль.";
+                return View(loginVM);
+            }
+
+            var signingInResult = await _signInManager.PasswordSignInAsync(user, loginVM.Password, false, false);
+            if (signingInResult.Succeeded)
+            {
+                return Redirect("/");
+            }
+
+            TempData["Error"] = "Щось пішло не так. Повторіть спробу.";
+            return View(loginVM);
         }
 
         
