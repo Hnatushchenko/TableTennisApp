@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Authentication;
 using System.Net;
 using TableTennisApp.Exceptions;
 using Microsoft.AspNetCore.Identity;
+using TableTennisApp.Data.ViewModels;
+using TableTennisApp.Data.Constants;
 
 namespace TableTennisApp.Controllers
 {
@@ -69,23 +71,32 @@ namespace TableTennisApp.Controllers
 
         
         [HttpPost]
-        public async Task<IActionResult> Register([FromForm] string name, [FromForm] string email, [FromForm] string password)
+        public async Task<IActionResult> Register(RegisterVM registerVM)
         {
+            if (!ModelState.IsValid) return View(registerVM);
 
-            try
+            var user = await _userManager.FindByEmailAsync(registerVM.Email);
+            if (user != null)
             {
-                await _playerService.AddAsync(name, login.Trim(), password.Trim());
+                TempData["Errors"] = new List<string> { "Ця електронна адреса вже використовується" };
+                return View(registerVM);
             }
-            catch (PlayerAlreadyExistsException)
+
+            var newUser = new ApplicationUser
             {
-                // TODO: Handle the exception
-                throw;
+                UserName = registerVM.UserName,
+                Email = registerVM.Email,
+                Rating = 1200
+            };
+
+            IdentityResult result = await _userManager.CreateAsync(newUser, registerVM.Password);
+            if (result.Succeeded == false)
+            {
+                TempData["Errors"] = result.Errors.Select(error => error.Description);
+                return View(registerVM);
             }
-            
-            var claims = new List<Claim> { new Claim(ClaimTypes.Name, login) };
-            ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            ClaimsPrincipal principal = new ClaimsPrincipal(claimsIdentity);
-            await ControllerContext.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+
+            await _userManager.AddToRoleAsync(newUser, UserRoles.User);
             return Redirect("/");
         }
     }

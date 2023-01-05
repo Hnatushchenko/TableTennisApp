@@ -6,13 +6,14 @@ namespace TableTennisApp.Data.ViewModels
     {
         [Display(Name = "Ім'я та прізвище")]
         [Required(ErrorMessage = "Введіть ім’я та прізвище")]
-        public string? FullName { get; set; }
+        public string? UserName { get; set; }
 
         [Display(Name = "Ел. пошта")]
         [Required(ErrorMessage = "Введіть електронну адресу")]
-        public string? EmailAddress { get; set; }
+        public string? Email { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Введіть пароль")]
+        [Display(Name = "Пароль")]
         [DataType(DataType.Password)]
         public string? Password { get; set; }
 
