@@ -1,0 +1,38 @@
+﻿@model IEnumerable<UsersVM>
+
+@{
+    ViewData["Title"] = "Користувачі";
+}
+
+<div class="row text-center">
+    <h3>
+        Управління користувачами
+    </h3>
+</div>
+
+<table class="table table-striped table-hover table-bordered">
+    <thead class="table-light">
+        <tr>
+            <th>Id</th>
+            <th>Ім'я та прізвище</th>
+            <th>Ел. адреса</th>
+            <th>Ролі</th>
+            <th>Дії</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in @Model)
+        {
+            <tr>
+                <td>@user.Id</td>
+                <td>@user.UserName</td>
+                <td>@user.Email</td>
+                <td>@string.Join('\n', @user.Roles)</td>
+                <td>
+                    <a class="btn btn-info" asp-action="Details" asp-route-id="@user.Id">Деталі</a>
+                    <a class="btn btn-warning" asp-action="Edit" asp-route-id="@user.Id">Редагувати</a>
+                </td>
+            </tr> 
+        }
+    </tbody>
+</table>

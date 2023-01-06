@@ -6,7 +6,7 @@ using TableTennisApp.Models;
 
 namespace TableTennisApp.Repository
 {
-    public class ApplicationContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>, IApplicationContext
+    public class ApplicationContext : IdentityDbContext<ApplicationUser, ApplicationRole, Guid>, IApplicationContext
     {
         public DbSet<ApplicationUser> Players { get; set; } = null!;
         public DbSet<Game> Games { get; set; } = null!;

@@ -23,9 +23,9 @@ namespace TableTennisApp
                 options.JsonSerializerOptions.WriteIndented = true;
             });
 
-            builder.Services.AddScoped<RoleManager<IdentityRole<Guid>>>();
+            //builder.Services.AddScoped<RoleManager<ApplicationRole>>();
 
-            IdentityBuilder identityBuilder = builder.Services.AddIdentity<ApplicationUser, IdentityRole<Guid>>(options =>
+            IdentityBuilder identityBuilder = builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
             {
                 options.User.RequireUniqueEmail = true;
                 options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789ÀàÁáÂâÃã¥´ÄäÅåªºÆæÇçÈè²³¯¿ÉéÊêËëÌìÍíÎîÏïĞğÑñÒòÓóÔôÕõÖö×÷ØøÙùüŞşßÿ-._ ";
@@ -38,7 +38,7 @@ namespace TableTennisApp
                 options.Password.RequiredUniqueChars = 0;
 
             }).AddEntityFrameworkStores<ApplicationContext>()
-              .AddRoleManager<RoleManager<IdentityRole<Guid>>>();
+              .AddRoleManager<RoleManager<ApplicationRole>>();
 
             
 
@@ -87,7 +87,7 @@ namespace TableTennisApp
         {
             using (var scope = serviceProvider.CreateScope())
             {
-                var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
+                var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
                 var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
                 string[] roleNames = { UserRoles.Admin, UserRoles.User };
                 IdentityResult roleResult;
@@ -97,7 +97,7 @@ namespace TableTennisApp
                     var roleExists = await roleManager.RoleExistsAsync(roleName);
                     if (!roleExists)
                     {
-                        roleResult = await roleManager.CreateAsync(new IdentityRole<Guid>(roleName));
+                        roleResult = await roleManager.CreateAsync(new ApplicationRole(roleName));
                     }
                 }
 
