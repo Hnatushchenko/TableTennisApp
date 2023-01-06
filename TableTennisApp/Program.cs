@@ -37,12 +37,10 @@ namespace TableTennisApp
                 options.Password.RequiredLength = 5;
                 options.Password.RequiredUniqueChars = 0;
 
-            }).AddEntityFrameworkStores<ApplicationContext>().AddRoleManager<RoleManager<IdentityRole<Guid>>>();
+            }).AddEntityFrameworkStores<ApplicationContext>()
+              .AddRoleManager<RoleManager<IdentityRole<Guid>>>();
 
-            //identityBuilder = new IdentityBuilder(identityBuilder.UserType, typeof(IdentityRole<Guid>), identityBuilder.Services);
-            //identityBuilder;
-            //identityBuilder.AddSignInManager<SignInManager<ApplicationUser>>();
-            //identityBuilder.AddRoleManager<RoleManager<IdentityRole<Guid>>>();
+            
 
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
@@ -89,7 +87,6 @@ namespace TableTennisApp
         {
             using (var scope = serviceProvider.CreateScope())
             {
-
                 var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
                 var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
                 string[] roleNames = { UserRoles.Admin, UserRoles.User };
