@@ -1,12 +1,15 @@
 ﻿@model IEnumerable<ApplicationUser>
 
+@{
+    ViewData["Title"] = "Черга";
+}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Черга на теніс</title>
     <style>
         body {
             margin-right: 50px;
@@ -23,7 +26,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 86%;
+   
             border: solid;
             border-width: 1px;
             padding-top: 10px;
@@ -32,11 +35,6 @@
             border-radius: 3px;
         }
         .buttons-box {
-            right: 0;
-            left: 0;
-            margin-right: auto;
-            margin-left: auto;
-            width: 86%;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -47,7 +45,7 @@
             border-radius: 3px;
             border-color: #C9C9C9;
             border-width: 1px;
-            width: 50%;
+            
             height: 30px;
             max-width: 200px;
         }
@@ -65,15 +63,6 @@
             margin-left: 10px
         }
     </style>
-    <script>
-        function leaveQueue() {
-            location.href = window.location.origin + "/Queue/Leave";
-        }
-        function enterQueue() {
-            location.href = window.location.origin + "/Queue/Enter";
-        }
-        
-    </script>
 </head>
 <body>
     <div class="players-in-queue">
@@ -89,9 +78,9 @@
             </div>
         }
     </div>
-    <div class="buttons-box">
-        <button id="sign-in" onclick="enterQueue()">Записатися</button>
-        <button id="leave" onclick="leaveQueue()">Покинути чергу</button>
+    <div class="buttons-box row row-cols-1 row-cols-sm-2">
+        <a class="btn btn-primary mb-2  offset-1 col-sm-4  float-start" asp-action="Enter" id="sign-in">Записатися</a>
+        <a class="btn btn-danger  offset-1 col-sm-4  float-end" asp-action="Leave">Покинути чергу</a>
     </div>
 </body>
 </html>
