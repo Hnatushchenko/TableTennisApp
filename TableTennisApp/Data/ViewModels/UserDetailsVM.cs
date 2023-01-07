@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using TableTennisApp.Data.ValidationAttributes;
 
 namespace TableTennisApp.Data.ViewModels
 {
@@ -14,8 +15,8 @@ namespace TableTennisApp.Data.ViewModels
         public string? Email { get; set; }
 
         [Display(Name = "Ролі")]
-        [Required(ErrorMessage = "Введіть ролі")]
-        public IEnumerable<string> Roles { get; set; } = Array.Empty<string>();
+        [CollectionNotEmpty(ErrorMessage = "Виберіть щонайменше 1 роль")]
+        public string[] Roles { get; set; } = Array.Empty<string>();
 
         [Display(Name = "Рейтинг")]
         [Required(ErrorMessage = "Вкажіть рейтинг")]

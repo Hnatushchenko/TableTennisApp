@@ -27,10 +27,11 @@
                 <td>@user.Id</td>
                 <td>@user.UserName</td>
                 <td>@user.Email</td>
-                <td>@string.Join('\n', @user.Roles)</td>
+                <td>@string.Join(", ", @user.Roles)</td>
                 <td>
                     <a class="btn btn-info" asp-action="Details" asp-route-id="@user.Id">Деталі</a>
                     <a class="btn btn-warning" asp-action="Edit" asp-route-id="@user.Id">Редагувати</a>
+                    <a class="btn btn-danger" asp-action="Delete" asp-route-id="@user.Id">Видалити</a>
                 </td>
             </tr> 
         }

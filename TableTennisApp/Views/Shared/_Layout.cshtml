@@ -1,7 +1,4 @@
-﻿
-@inject UserManager<ApplicationUser> UserManager; 
-
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -34,8 +31,8 @@
                         </li>
                         @if (User.Identity is not null && User.IsInRole(UserRoles.Admin))
                         {
-                            <li class="nav-item dropdown">
-                                <a class="text-black nav-link dropdown-toggle" id="navbarDropdown"  data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <li class="nav-item dropdown" style="cursor: pointer;">
+                                <a class="nav-link text-dark dropdown-toggle" id="navbarDropdown"  data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <i class="bi bi-gear"></i> Керувати
                                 </a>
 
@@ -53,16 +50,16 @@
                         <a class="btn btn-outline-success my-2 my-sm-0" asp-controller="Account" asp-action="Login">
                             <i class="bi bi-box-arrow-in-right"></i> Вхід
                         </a>
-                            <span style="padding: 5px;"></span>
-                            <a class="btn btn-outline-primary my-2 my-sm-0" asp-controller="Account" asp-action="Register">
-            <i class="bi bi-person-plus"></i> Реєстрація
-        </a>
+                        <span style="padding: 5px;"></span>
+                        <a class="btn btn-outline-primary my-2 my-sm-0" asp-controller="Account" asp-action="Register">
+                            <i class="bi bi-person-plus"></i> Реєстрація
+                        </a>
                     }
                     else
                     {     
                         <span style="padding: 5px;"></span>
                         <a class="btn btn-outline-danger my-2 my-sm-0" asp-controller="Account" asp-action="Logout">
-                                <i class="bi bi-box-arrow-in-right"></i> Вийти
+                            <i class="bi bi-box-arrow-in-right"></i> Вийти
                         </a>
                     }
                 </div>

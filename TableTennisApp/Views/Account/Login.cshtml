@@ -12,14 +12,11 @@
             </p>
         </div>
 
-        @if (TempData["Errors"] is IEnumerable<string> errors)
+        @if (TempData["Error"] is string error)
         {
-            @foreach (string error in errors)
-            {
-                <div class="col-md-12 alert alert-danger">
-                    <span>@error</span>
-                </div>
-            }
+            <div class="col-md-12 alert alert-danger">
+                <span>@error</span>
+            </div>
         }
 
         <div class="row">

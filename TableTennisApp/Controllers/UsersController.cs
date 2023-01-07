@@ -5,15 +5,16 @@ using Microsoft.EntityFrameworkCore;
 using TableTennisApp.Data.Constants;
 using TableTennisApp.Data.ViewModels;
 using TableTennisApp.Models;
+using TableTennisApp.Services;
 
 namespace TableTennisApp.Controllers
 {
     [Authorize(Roles = UserRoles.Admin)]
     public class UsersController : Controller
     {
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ApplicationUserManager _userManager;
 
-        public UsersController(UserManager<ApplicationUser> userManager)
+        public UsersController(ApplicationUserManager userManager)
         {
             _userManager = userManager;
         }
@@ -39,22 +40,12 @@ namespace TableTennisApp.Controllers
         [HttpGet]        
         public async Task<IActionResult> Details([FromRoute] Guid id)
         {
-            var user = await _userManager.Users.SingleOrDefaultAsync(user => user.Id == id);
-            if (user is null)
+            var model = await _userManager.GetUserDetailsByIdAsync(id);
+
+            if (model is null)
             {
-                // TODO: Create view "NotFound"
                 return Json("Not found");
             }
-
-            var model = new UserDetailsVM
-            { 
-                Id = user.Id,
-                UserName = user.UserName,
-                Email=user.Email,
-                Roles = await _userManager.GetRolesAsync(user),
-                Rating = user.Rating,
-                TotalNumberOfGames = user.TotalNumberOfGames,
-            };
 
             return View(model);
         }
@@ -63,24 +54,57 @@ namespace TableTennisApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit([FromRoute] Guid id)
         {
-            var user = await _userManager.Users.SingleOrDefaultAsync(user => user.Id == id);
-            if (user is null)
+            var model = await _userManager.GetUserDetailsByIdAsync(id);
+            
+            if (model is null)
             {
-                // TODO: Create view "NotFound"
                 return Json("Not found");
             }
 
-            var model = new UserDetailsVM
-            {
-                Id = user.Id,
-                UserName = user.UserName,
-                Email = user.Email,
-                Roles = await _userManager.GetRolesAsync(user),
-                Rating = user.Rating,
-                TotalNumberOfGames = user.TotalNumberOfGames,
-            };
-
             return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(UserDetailsVM updatedUser)
+        {
+            if (ModelState.IsValid == false)
+            {
+                return View(updatedUser);
+            }
+
+            var existingUser = await _userManager.FindByIdAsync(updatedUser.Id.ToString());
+            existingUser.UserName = updatedUser.UserName;
+            existingUser.TotalNumberOfGames = updatedUser.TotalNumberOfGames;
+            existingUser.Rating = updatedUser.Rating;
+            existingUser.Email = updatedUser.Email;
+            var result = await _userManager.UpdateAsync(existingUser);
+
+            if (result.Succeeded == false)
+            {
+                TempData["Errors"] = result.Errors.Select(error => error.Description);
+                return View(updatedUser);
+            }
+
+            await _userManager.RemoveFromRolesAsync(existingUser, UserRoles.AllRoles);
+            foreach (string role in updatedUser.Roles)
+            {
+                await _userManager.AddToRoleAsync(existingUser, role);
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
+        [Route("Users/Delete/{id:guid}")]
+        [HttpGet]
+        public async Task<IActionResult> Delete([FromRoute] Guid id)
+        {
+            var user = await _userManager.FindByIdAsync(id.ToString());
+            if (user is null)
+            {
+                return Json("Not found");
+            }
+
+            await _userManager.DeleteAsync(user);
+            return RedirectToAction(nameof(Index));
         }
     }
 }

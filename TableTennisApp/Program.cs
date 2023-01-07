@@ -38,6 +38,7 @@ namespace TableTennisApp
                 options.Password.RequiredUniqueChars = 0;
 
             }).AddEntityFrameworkStores<ApplicationContext>()
+              .AddUserManager<ApplicationUserManager>()
               .AddRoleManager<RoleManager<ApplicationRole>>();
 
             
@@ -88,7 +89,7 @@ namespace TableTennisApp
             using (var scope = serviceProvider.CreateScope())
             {
                 var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
-                var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+                var userManager = scope.ServiceProvider.GetRequiredService<ApplicationUserManager>();
                 string[] roleNames = { UserRoles.Admin, UserRoles.User };
                 IdentityResult roleResult;
 
@@ -110,13 +111,14 @@ namespace TableTennisApp
                 string adminPassword = "123123Aa";
                 var _user = await userManager.FindByEmailAsync(admin.Email);
 
-                if (_user == null)
+                if (_user != null)
                 {
-                    var createPowerUser = await userManager.CreateAsync(admin, adminPassword);
-                    if (createPowerUser.Succeeded)
-                    {
-                        await userManager.AddToRoleAsync(admin, UserRoles.Admin);
-                    }
+                    await userManager.DeleteAsync(_user);
+                }
+                var createPowerUser = await userManager.CreateAsync(admin, adminPassword);
+                if (createPowerUser.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(admin, UserRoles.Admin);
                 }
             }
         }
