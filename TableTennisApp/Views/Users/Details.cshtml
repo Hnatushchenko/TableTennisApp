@@ -1,0 +1,38 @@
+﻿@model UserDetailsVM
+
+@{
+    ViewData["Title"] = "Деталі";
+}
+
+<div class="row text-center">
+    <h3>
+        @Model.UserName - Деталі
+    </h3>
+</div>
+
+<table class="table table-striped table-hover table-bordered">
+    <tr>
+        <th>Id</th>
+        <td>@Model.Id</td>
+    </tr>
+    <tr>
+        <th>Ім'я та прізвище</th>
+        <td>@Model.UserName</td>
+    </tr>
+    <tr>
+        <th>Ел. адреса</th>
+        <td>@Model.Email</td>
+    </tr>
+    <tr>
+        <th>Ролі</th>
+        <td>@string.Join(", ", @Model.Roles)</td>
+    </tr>
+    <tr>
+        <th>Рейтинг</th>
+        <td>@Model.Rating</td>
+    </tr>
+    <tr>
+        <th>Кількість ігор</th>
+        <td>@Model.TotalNumberOfGames</td>
+    </tr>
+</table>

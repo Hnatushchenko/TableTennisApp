@@ -46,8 +46,17 @@ namespace TableTennisApp.Controllers
                 return Json("Not found");
             }
 
-            return Json(user);
-            // TODO: //return View(user);
+            var model = new UserDetailsVM
+            { 
+                Id = user.Id,
+                UserName = user.UserName,
+                Email=user.Email,
+                Roles = await _userManager.GetRolesAsync(user),
+                Rating = user.Rating,
+                TotalNumberOfGames = user.TotalNumberOfGames,
+            };
+
+            return View(model);
         }
 
         [Route("Users/Edit/{id:guid}")]
@@ -61,8 +70,17 @@ namespace TableTennisApp.Controllers
                 return Json("Not found");
             }
 
-            return Json(user);
-            // TODO: //return View(user);
+            var model = new UserDetailsVM
+            {
+                Id = user.Id,
+                UserName = user.UserName,
+                Email = user.Email,
+                Roles = await _userManager.GetRolesAsync(user),
+                Rating = user.Rating,
+                TotalNumberOfGames = user.TotalNumberOfGames,
+            };
+
+            return View(model);
         }
     }
 }
