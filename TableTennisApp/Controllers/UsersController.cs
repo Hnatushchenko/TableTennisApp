@@ -44,7 +44,7 @@ namespace TableTennisApp.Controllers
 
             if (model is null)
             {
-                return Json("Not found");
+                return View("NotFound");
             }
 
             return View(model);
@@ -58,7 +58,7 @@ namespace TableTennisApp.Controllers
             
             if (model is null)
             {
-                return Json("Not found");
+                return View("NotFound");
             }
 
             return View(model);
@@ -100,7 +100,7 @@ namespace TableTennisApp.Controllers
             var user = await _userManager.FindByIdAsync(id.ToString());
             if (user is null)
             {
-                return Json("Not found");
+                return View("NotFound");
             }
 
             await _userManager.DeleteAsync(user);
