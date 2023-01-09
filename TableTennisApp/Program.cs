@@ -23,8 +23,6 @@ namespace TableTennisApp
                 options.JsonSerializerOptions.WriteIndented = true;
             });
 
-            //builder.Services.AddScoped<RoleManager<ApplicationRole>>();
-
             IdentityBuilder identityBuilder = builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
             {
                 options.User.RequireUniqueEmail = true;
@@ -90,10 +88,9 @@ namespace TableTennisApp
             {
                 var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
                 var userManager = scope.ServiceProvider.GetRequiredService<ApplicationUserManager>();
-                string[] roleNames = { UserRoles.Admin, UserRoles.User };
                 IdentityResult roleResult;
 
-                foreach (var roleName in roleNames)
+                foreach (var roleName in UserRoles.AllRoles)
                 {
                     var roleExists = await roleManager.RoleExistsAsync(roleName);
                     if (!roleExists)
@@ -109,16 +106,18 @@ namespace TableTennisApp
                 };
 
                 string adminPassword = "123123Aa";
-                var _user = await userManager.FindByEmailAsync(admin.Email);
+                var user = await userManager.FindByEmailAsync(admin.Email);
 
-                if (_user != null)
+                if (user != null)
                 {
-                    await userManager.DeleteAsync(_user);
+                    await userManager.DeleteAsync(user);
                 }
                 var createPowerUser = await userManager.CreateAsync(admin, adminPassword);
                 if (createPowerUser.Succeeded)
                 {
                     await userManager.AddToRoleAsync(admin, UserRoles.Admin);
+                    await userManager.AddToRoleAsync(admin, UserRoles.Referee);
+                    await userManager.AddToRoleAsync(admin, UserRoles.User);
                 }
             }
         }

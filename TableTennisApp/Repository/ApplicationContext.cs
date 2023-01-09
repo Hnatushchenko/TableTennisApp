@@ -24,6 +24,7 @@ namespace TableTennisApp.Repository
 
             builder.Entity<ApplicationUser>().Property(p => p.Id).ValueGeneratedOnAdd();
             builder.Entity<QueueItem>().Property(p => p.Id).ValueGeneratedOnAdd();
+            builder.Entity<Game>().Property(p => p.Id).ValueGeneratedOnAdd();
         }
     }
 }

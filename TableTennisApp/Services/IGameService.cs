@@ -1,10 +1,11 @@
-﻿using TableTennisApp.Models;
+﻿using TableTennisApp.Data.ViewModels;
+using TableTennisApp.Models;
 
 namespace TableTennisApp.Services
 {
     public interface IGameService
     {
-        Task AddAsync(string playerWhoWonLogin, string playerWhoLostLogin);
-        IEnumerable<Game> GetAllGames();
+        Task AddAsync(GameVM gameVM);
+        Task<IEnumerable<Game>> GetAllGamesAsync();
     }
 }

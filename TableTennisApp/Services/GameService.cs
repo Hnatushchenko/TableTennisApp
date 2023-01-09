@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using TableTennisApp.Data.ViewModels;
 using TableTennisApp.Models;
 using TableTennisApp.Repository;
 
@@ -8,33 +9,40 @@ namespace TableTennisApp.Services
     {
         private readonly IApplicationContext _dbContext;
         private readonly IRatingManager _ratingManager;
+        private readonly ApplicationUserManager _userManager;
 
-        public GameService(IApplicationContext dbContext, IRatingManager ratingManager)
+        public GameService(IApplicationContext dbContext, IRatingManager ratingManager, ApplicationUserManager userManager)
         {
             _dbContext = dbContext;
             _ratingManager = ratingManager;
+            _userManager = userManager;
         }
 
-        public async Task AddAsync(string playerWhoWonLogin, string playerWhoLostLogin)
+        public async Task AddAsync(GameVM gameVM)
         {
-            //Player playerWhoWon = _dbContext.Players.Single(p => p.Login == playerWhoWonLogin);
-            //Player playerWhoLost = _dbContext.Players.Single(p => p.Login == playerWhoLostLogin);
-            //_ratingManager.CalculateNewRating(playerWhoWon, playerWhoLost);
-            //playerWhoLost.TotalGames++;
-            //playerWhoWon.TotalGames++;
-            //Game game = new Game
-            //{
-            //    Id = Guid.NewGuid(),
-            //    PlayerWhoWonId = playerWhoWon.Id,
-            //    PlayerWhoLostId = playerWhoLost.Id,
-            //};
-            //_dbContext.Games.Add(game);
-            //await _dbContext.SaveChangesAsync();
+            var winner = await _userManager.FindByIdAsync(gameVM.WinnerId.ToString());
+            var loser = await _userManager.FindByIdAsync(gameVM.LoserId.ToString());
+            _ratingManager.CalculateNewRating(winner, loser);
+            winner.TotalNumberOfGames++;
+            loser.TotalNumberOfGames++;
+            Game game = new Game
+            {
+                WinnerScore = gameVM.WinnerScore,
+                LoserScore = gameVM.LoserScore,
+                applicationUsers = new List<ApplicationUser>() { winner, loser }
+            };
+            _dbContext.Games.Add(game);
+            await _userManager.UpdateAsync(winner);
+            await _userManager.UpdateAsync(loser);
+            await _dbContext.SaveChangesAsync();
         }
 
-        public IEnumerable<Game> GetAllGames()
+        public async Task<IEnumerable<Game>> GetAllGamesAsync()
         {
-            var games = _dbContext.Games.AsNoTracking();
+            var games = await _dbContext.Games
+                .Include(game => game.applicationUsers)
+                .AsNoTracking()
+                .ToListAsync();
             return games;
         }
     }

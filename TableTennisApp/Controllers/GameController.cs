@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using TableTennisApp.Data.Constants;
+using TableTennisApp.Data.ViewModels;
 using TableTennisApp.Enums;
 using TableTennisApp.Models;
 using TableTennisApp.Services;
@@ -10,67 +13,47 @@ namespace TableTennisApp.Controllers
 {
     public class GameController : Controller
     {
-        private readonly IPlayersService _playersService;
+        private readonly ApplicationUserManager _userManager;
         private readonly IGameService _gameService;
 
-        public GameController(IPlayersService playersService, IGameService gameService)
+        public GameController(IGameService gameService, ApplicationUserManager userManager)
         {
-            _playersService = playersService;
             _gameService = gameService;
+            _userManager = userManager;
         }
 
+        [Authorize(Roles = UserRoles.Admin)]
         [HttpGet]
-        public IActionResult Add()
+        public async Task<IActionResult> Index()
         {
-            if (User.Identity is not null && User.Identity.IsAuthenticated)
-            {
-                Claim? loginClaim = User.FindFirst(ClaimTypes.Name);
-                if (loginClaim == null)
-                {
-                    throw new ArgumentException("Claim cannot be null");
-                }
-
-                string currentUserLogin = User.FindFirstValue(ClaimTypes.Name);
-                var players = _playersService.GetAllPlayers()
-                    .Where(p => p.Email != currentUserLogin)
-                    .OrderBy(p => p.UserName);
-
-                return View(players);
-            }
-            else
-            {
-                return Redirect("/Account/Login");
-            }
-            
+            var games = await _gameService.GetAllGamesAsync();
+            return Json(games);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Add([FromForm] GameResult gameResult, [FromForm] string opponentLogin)
+        [Authorize(Roles = UserRoles.Referee)]
+        [HttpGet]
+        public async Task<IActionResult> Add()
         {
-            if (User.Identity is not null && User.Identity.IsAuthenticated)
+            var players = await _userManager.Users.ToListAsync();
+            var model = new GameVM
             {
-                Claim? loginClaim = User.FindFirst(ClaimTypes.Name);
-                if (loginClaim == null)
-                {
-                    throw new ArgumentException("Claim cannot be null");
-                }
+                Players = players
+            };
+            return View(model);
+        }
 
-                string login = loginClaim.Value;
-                if (gameResult == GameResult.Victory)
-                {
-                    await _gameService.AddAsync(login, opponentLogin);
-                }
-                else
-                {
-                    await _gameService.AddAsync(opponentLogin, login);
-                }
-                
-                return Redirect("/"); // TODO: appropriate page
-            }
-            else
+        [Authorize(Roles = UserRoles.Referee)]
+        [HttpPost]
+        public async Task<IActionResult> Add(GameVM gameVM)
+        {
+            if (!ModelState.IsValid)
             {
-                return Redirect("/Account/Login");
+                gameVM.Players = await _userManager.Users.ToListAsync();
+                return View(gameVM);
             }
+
+            await _gameService.AddAsync(gameVM);
+            return Redirect("/");
         }
     }
 }

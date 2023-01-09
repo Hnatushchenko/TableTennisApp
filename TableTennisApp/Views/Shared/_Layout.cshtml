@@ -21,14 +21,18 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">На головну</a>
+                            <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">На головну</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Queue" asp-action="Index">Черга</a>
+                            <a class="nav-link text-dark" asp-controller="Queue" asp-action="Index">Черга</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Game" asp-action="Add">Додати гру</a>
-                        </li>
+                        @if (User.Identities is not null && User.IsInRole(UserRoles.Referee))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark"  asp-controller="Game" asp-action="Add">Додати гру</a>
+                            </li>
+                        }
+                            
                         @if (User.Identity is not null && User.IsInRole(UserRoles.Admin))
                         {
                             <li class="nav-item dropdown" style="cursor: pointer;">
@@ -38,14 +42,17 @@
 
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                     <li>
-                                        <a class="dropdown-item" asp-controller="Users" asp-action="Index"><i class="bi bi-person"></i>Користувачі</a>
+                                        <a class="dropdown-item" asp-controller="Users" asp-action="Index"><i class="bi bi-person"></i> Користувачі</a>
+                                    </li>
+                                    <li>
+                                                <a class="dropdown-item" asp-controller="Game" asp-action="Index"><i class="bi bi-controller"></i> Ігри</a>
                                     </li>
                                 </ul>
                             </li>
                         }
                     </ul>
                     
-                    @if (User.Identity is not null && User.Identity.IsAuthenticated == false)
+                    @if (User.Identity is null || User.Identity.IsAuthenticated == false)
                     {
                         <a class="btn btn-outline-success my-2 my-sm-0" asp-controller="Account" asp-action="Login">
                             <i class="bi bi-box-arrow-in-right"></i> Вхід

@@ -29,7 +29,8 @@ namespace TableTennisApp.Controllers
                     Id = users[i].Id,
                     UserName = users[i].UserName,
                     Email = users[i].Email,
-                    Roles = await _userManager.GetRolesAsync(users[i])
+                    Roles = await _userManager.GetRolesAsync(users[i]),
+                    Rating = users[i].Rating,
                 };
                 usersViewModels.Add(userVM);
             }

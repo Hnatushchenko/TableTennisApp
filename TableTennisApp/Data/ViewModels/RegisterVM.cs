@@ -10,6 +10,7 @@ namespace TableTennisApp.Data.ViewModels
 
         [Display(Name = "Ел. пошта")]
         [Required(ErrorMessage = "Введіть електронну адресу")]
+        [EmailAddress(ErrorMessage = "Введена електронна адреса некоректна")]
         public string? Email { get; set; }
 
         [Required(ErrorMessage = "Введіть пароль")]

@@ -4,12 +4,12 @@ namespace TableTennisApp.Models
 {
     public class RatingManager : IRatingManager
     {
-        public void CalculateNewRating(ApplicationUser playerWhoWon, ApplicationUser playerWhoLost)
+        public void CalculateNewRating(ApplicationUser winner, ApplicationUser loser)
         {
-            double difference = playerWhoLost.Rating - playerWhoWon.Rating;
+            double difference = loser.Rating - winner.Rating;
             double expectedScore = 1 / (1 + Math.Pow(10, difference / 400));
-            playerWhoWon.Rating += Convert.ToInt32(20 * (1 - expectedScore));
-            playerWhoLost.Rating -= Convert.ToInt32(20 * (1 - expectedScore));
+            winner.Rating += Convert.ToInt32(20 * (1 - expectedScore));
+            loser.Rating -= Convert.ToInt32(20 * (1 - expectedScore));
         }
     }
 }

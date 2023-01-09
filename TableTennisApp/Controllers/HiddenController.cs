@@ -18,7 +18,7 @@ namespace TableTennisApp.Controllers
 
         public IActionResult Games()
         {
-            var games = _gameService.GetAllGames();
+            var games = _gameService.GetAllGamesAsync();
             return Json(games);
         }
 
