@@ -45,5 +45,15 @@ namespace TableTennisApp.Services
                 .ToListAsync();
             return games;
         }
+
+        public async Task DeleteAsync(Guid id)
+        {
+            var game = await _dbContext.Games.FirstAsync(game => game.Id == id);
+            if (game is not null)
+            {
+                _dbContext.Games.Remove(game);
+                await _dbContext.SaveChangesAsync();
+            }
+        }
     }
 }

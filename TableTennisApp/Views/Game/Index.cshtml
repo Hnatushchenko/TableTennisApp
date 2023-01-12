@@ -1,0 +1,64 @@
+﻿@model IEnumerable<Game>
+
+@{
+    ViewData["Title"] = "Партії";
+}
+
+<div class="row text-center">
+    <h3>
+        Зіграні партії
+    </h3>
+</div>
+
+<table class="table table-striped table-hover table-bordered">
+    <thead class="table-light">
+        <tr>
+            <th>Переможець</th>
+            <th>Той, хто програв</th>
+            <th>Рахунок</th>
+            <th>Дії</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var game in @Model)
+        {
+            <tr id="@game.Id">
+                <td>
+                    <a asp-controller="Users" asp-action="Details" asp-route-id="@game.WinnerId" style="text-decoration: none; color: inherit;">
+                        @game.Winner?.UserName
+                    </a>
+                </td>
+                <td>
+                    <a asp-controller="Users" asp-action="Details" asp-route-id="@game.LoserId" style="text-decoration: none; color: inherit;">
+                        @game.Loser?.UserName
+                    </a>
+                </td>
+                <td>@game.WinnerScore:@game.LoserScore</td>
+                <td>
+                    <button class="btn btn-danger" onclick="deleteGame('@game.Id')">
+                        Видалити
+                    </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+        async function deleteGame(id) {
+            let responce = await fetch("/Game/Delete", {
+                method: 'DELETE',
+                headers: {
+                    'Content-type': 'application/json; charset=UTF-8'
+                },
+                body: JSON.stringify(id)
+            });
+            if (responce.ok) {
+                const row = document.getElementById(id);
+                const tableBody = row.parentNode;                
+                tableBody.removeChild(row);
+            }
+        }
+    </script>
+}

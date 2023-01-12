@@ -13,7 +13,7 @@ namespace TableTennisApp.Data.ViewModels
         [GuidNotEmpty(ErrorMessage = "Виберіть переможця")]
         public Guid WinnerId { get; set; }
 
-        [Range(11, int.MaxValue, ErrorMessage = "Значення повинно бути більше 10")]
+        [Range(11, int.MaxValue, ErrorMessage = "Значення повинно бути 11 або більше")]
         [Required(ErrorMessage = "Вкажіть рахунок")]
         public int WinnerScore { get; set; }
 

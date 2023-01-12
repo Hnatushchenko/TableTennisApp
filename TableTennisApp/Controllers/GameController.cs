@@ -27,7 +27,7 @@ namespace TableTennisApp.Controllers
         public async Task<IActionResult> Index()
         {
             var games = await _gameService.GetAllGamesAsync();
-            return Json(games);
+            return View(games);
         }
 
         [Authorize(Roles = UserRoles.Referee)]
@@ -54,6 +54,14 @@ namespace TableTennisApp.Controllers
 
             await _gameService.AddAsync(gameVM);
             return Redirect("/");
+        }
+
+        [Authorize(Roles = UserRoles.Admin)]
+        [HttpDelete]
+        public async Task<IActionResult> Delete([FromBody] Guid id)
+        {
+            await _gameService.DeleteAsync(id);
+            return Ok();
         }
     }
 }
