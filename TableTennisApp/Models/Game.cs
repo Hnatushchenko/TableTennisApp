@@ -6,23 +6,16 @@ namespace TableTennisApp.Models
     public class Game
     {
         public Guid Id { get; set; }
+        public Guid WinnerId { get; set; }
         public int WinnerScore { get; set; }
+        public Guid LoserId { get; set; }
         public int LoserScore { get; set; }
-        [JsonIgnore]
         public List<ApplicationUser>? applicationUsers { get; set; }
 
-        [NotMapped] 
-        public Guid? WinnerId  => applicationUsers?.FirstOrDefault()?.Id;
-        [JsonIgnore]
         [NotMapped]
-        public ApplicationUser? Winner => applicationUsers?.FirstOrDefault();
+        public ApplicationUser? Winner => applicationUsers?.First(u => u.Id == WinnerId);
 
         [NotMapped]
-        public Guid? LoserId => applicationUsers?.LastOrDefault()?.Id;
-        [JsonIgnore]
-        [NotMapped]
-        public ApplicationUser? Loser => applicationUsers?.LastOrDefault();
-
-
+        public ApplicationUser? Loser => applicationUsers?.First(u => u.Id == LoserId);
     }
 }

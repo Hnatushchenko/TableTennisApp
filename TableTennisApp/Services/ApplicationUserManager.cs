@@ -12,7 +12,7 @@ namespace TableTennisApp.Services
         {
         }
 
-        public async Task<UserDetailsVM?> GetUserDetailsByIdAsync(Guid id)
+        public async Task<UserDetailsVM?> GetUserDetailsByIdAsync(Guid? id)
         {
             var user = await Users.SingleOrDefaultAsync(user => user.Id == id);
             if (user is null)

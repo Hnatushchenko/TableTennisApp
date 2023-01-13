@@ -8,5 +8,6 @@ namespace TableTennisApp.Services
         Task AddAsync(GameVM gameVM);
         Task<IEnumerable<Game>> GetAllGamesAsync();
         Task DeleteAsync(Guid id);
+        Task<IEnumerable<Game>> GetAllGamesByUserIdAsync(Guid userId);
     }
 }

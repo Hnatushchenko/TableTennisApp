@@ -108,17 +108,17 @@ namespace TableTennisApp
                 string adminPassword = "123123Aa";
                 var user = await userManager.FindByEmailAsync(admin.Email);
 
-                if (user != null)
+                if (user == null)
                 {
-                    await userManager.DeleteAsync(user);
+                    var createPowerUser = await userManager.CreateAsync(admin, adminPassword);
+                    if (createPowerUser.Succeeded)
+                    {
+                        await userManager.AddToRoleAsync(admin, UserRoles.Admin);
+                        await userManager.AddToRoleAsync(admin, UserRoles.Referee);
+                        await userManager.AddToRoleAsync(admin, UserRoles.User);
+                    }
                 }
-                var createPowerUser = await userManager.CreateAsync(admin, adminPassword);
-                if (createPowerUser.Succeeded)
-                {
-                    await userManager.AddToRoleAsync(admin, UserRoles.Admin);
-                    await userManager.AddToRoleAsync(admin, UserRoles.Referee);
-                    await userManager.AddToRoleAsync(admin, UserRoles.User);
-                }
+                
             }
         }
     }

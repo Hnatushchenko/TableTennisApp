@@ -27,6 +27,8 @@ namespace TableTennisApp.Services
             loser.TotalNumberOfGames++;
             Game game = new Game
             {
+                WinnerId = gameVM.WinnerId,
+                LoserId = gameVM.LoserId,
                 WinnerScore = gameVM.WinnerScore,
                 LoserScore = gameVM.LoserScore,
                 applicationUsers = new List<ApplicationUser>() { winner, loser }
@@ -46,14 +48,30 @@ namespace TableTennisApp.Services
             return games;
         }
 
+        public async Task<IEnumerable<Game>> GetAllGamesByUserIdAsync(Guid userId)
+        {
+            var games = await _dbContext.Games
+                .Where(game => game.WinnerId == userId || game.LoserId == userId)
+                .Include(game => game.applicationUsers)
+                .AsNoTracking()
+                .ToListAsync();
+            return games;
+        }
+
         public async Task DeleteAsync(Guid id)
         {
-            var game = await _dbContext.Games.FirstAsync(game => game.Id == id);
-            if (game is not null)
+            var game = await _dbContext.Games
+                .Include(g => g.applicationUsers)
+                .FirstAsync(game => game.Id == id);
+
+            if (game is null || game.applicationUsers is null) return;
+
+            foreach (var user in game.applicationUsers)
             {
-                _dbContext.Games.Remove(game);
-                await _dbContext.SaveChangesAsync();
+                user.TotalNumberOfGames--;
             }
+            _dbContext.Games.Remove(game);
+            await _dbContext.SaveChangesAsync();
         }
     }
 }

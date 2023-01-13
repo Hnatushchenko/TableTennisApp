@@ -22,11 +22,31 @@ namespace TableTennisApp.Controllers
             _userManager = userManager;
         }
 
-        [Authorize(Roles = UserRoles.Admin)]
+        [Authorize]
+        [Route("Game/Index/{userId:guid?}")]
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(Guid userId)
         {
-            var games = await _gameService.GetAllGamesAsync();
+            IEnumerable<Game> games;
+            if (User.IsInRole(UserRoles.Admin))
+            {
+                if (userId == Guid.Empty)
+                {
+                    games = await _gameService.GetAllGamesAsync();
+                }
+                else
+                {
+                    games = await _gameService.GetAllGamesByUserIdAsync(userId);
+                }
+                return View(games);
+            }
+            
+            var email = User.FindFirstValue(ClaimTypes.Email);
+            var user = await _userManager.FindByEmailAsync(email);
+
+            if (user.Id != userId) return Forbid();
+
+            games = await _gameService.GetAllGamesByUserIdAsync(userId);
             return View(games);
         }
 
@@ -53,7 +73,7 @@ namespace TableTennisApp.Controllers
             }
 
             await _gameService.AddAsync(gameVM);
-            return Redirect("/");
+            return RedirectToAction(nameof(Add));
         }
 
         [Authorize(Roles = UserRoles.Admin)]
