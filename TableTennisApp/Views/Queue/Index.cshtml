@@ -12,7 +12,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body {
-            margin-right: 50px;
+            margin-right: 20px;
             margin-left: 20px;
         }
         .players-in-queue {
@@ -47,7 +47,6 @@
             border-width: 1px;
             
             height: 30px;
-            max-width: 200px;
         }
         h5 {
             right: 0;
@@ -78,9 +77,13 @@
             </div>
         }
     </div>
-    <div class="buttons-box row row-cols-1 row-cols-sm-2">
-        <a class="btn btn-primary mb-2  offset-1 col-sm-4  float-start" asp-action="Enter" id="sign-in">Записатися</a>
-        <a class="btn btn-danger  offset-1 col-sm-4  float-end" asp-action="Leave">Покинути чергу</a>
+    <div class="row">
+        <div class="col-sm-11">
+            <div class="buttons-box row px-4 px-sm-0 row-cols-1 row-cols-sm-3 d-block d-sm-flex justify-content-sm-between">
+                <a class="btn btn-primary mb-2 mb-sm-0 float-sm-start offset-sm-1 col-sm-4" asp-action="Enter" id="sign-in">Записатися</a>
+                <a class="btn btn-danger float-sm-end col-sm-4" asp-action="Leave">Покинути чергу</a>
+            </div>
+        </div>
     </div>
 </body>
 </html>
