@@ -1,12 +1,12 @@
 ﻿@model UserDetailsVM
 
 @{
-    ViewData["Title"] = "Деталі";
+    ViewData["Title"] = @Model.UserName;
 }
 
 <div class="row text-center">
     <h3>
-        @Model.UserName - Деталі
+        @Model.UserName
     </h3>
 </div>
 

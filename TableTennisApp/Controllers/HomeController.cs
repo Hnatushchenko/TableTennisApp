@@ -9,31 +9,19 @@ namespace TableTennisApp.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly IPlayersService _playersService;
-        public HomeController(IPlayersService playersService)
+        private readonly ApplicationUserManager _userManager;
+        public HomeController(ApplicationUserManager userManager)
         {
-            _playersService = playersService;
+            _userManager = userManager;
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Index()
+        [Authorize]
+        public async Task<IActionResult> Index()
         {
-            if (User.Identity is not null && User.Identity.IsAuthenticated)
-            {
-                string? login = User.FindFirst(ClaimTypes.Name)?.Value;
-                if (login is not null)
-                {
-                    ApplicationUser? player = _playersService.GetByLogin(login);
-                    return View(player);
-                }
-            }
-            return Redirect("/Account/Login");
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            var email = User.FindFirstValue(ClaimTypes.Email);
+            var user = await _userManager.FindByEmailAsync(email);
+            var model = await _userManager.GetUserDetailsByIdAsync(user.Id);
+            return View("../Users/Details", model);
         }
     }
 }
