@@ -21,13 +21,16 @@ namespace TableTennisApp.Services
         {
             return _queueItemService.GetPlayersFromQueue();
         }
-        public async Task LeaveByEmailAsync(string email)
+        public async Task LeaveByEmailAsync(string? email)
         {
+            if (email is null) return;
             var user = await _userManager.FindByEmailAsync(email);
             await _queueItemService.RemoveByUserIdAsync(user.Id);
         }
-        public async Task EnterByEmailAsync(string email)
+        public async Task EnterByEmailAsync(string? email)
         {
+            if (email is null) return;
+
             ApplicationUser? playerToAdd = await _userManager.FindByEmailAsync(email);
 
             await _queueItemService.RemoveByUserIdAsync(playerToAdd.Id);

@@ -6,7 +6,7 @@ namespace TableTennisApp.Services
     {
         Task ClearAsync();
         IEnumerable<ApplicationUser> GetAllPlayers();
-        Task LeaveByEmailAsync(string login);
-        Task EnterByEmailAsync(string login);
+        Task LeaveByEmailAsync(string? login);
+        Task EnterByEmailAsync(string? login);
     }
 }

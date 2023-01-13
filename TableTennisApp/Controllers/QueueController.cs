@@ -30,30 +30,21 @@ namespace TableTennisApp.Controllers
         }
 
         [Authorize]
-        [HttpGet]
+        [HttpPost]
         public async Task<IActionResult> Enter()
         {
             Claim? email = User.FindFirst(ClaimTypes.Email);
-            if (email == null)
-            {
-                throw new ArgumentException("Claim cannot be null");
-            }
-            await _queueManager.EnterByEmailAsync(email.Value);
-            return Redirect("/Queue/Index"); // TODO: Add default path for Queue controller
+            await _queueManager.EnterByEmailAsync(email?.Value);
+            return Ok();
         }
 
         [Authorize]
-        [HttpGet]
+        [HttpPost]
         public async Task<IActionResult> Leave()
         {
             Claim? login = User.FindFirst(ClaimTypes.Email);
-            if (login == null)
-            {
-                throw new ArgumentException("Claim cannot be null");
-            }
-            await _queueManager.LeaveByEmailAsync(login.Value);
-            return Redirect("/Queue/Index"); // TODO: Add default path for Queue controller
-            
+            await _queueManager.LeaveByEmailAsync(login?.Value);
+            return Ok();
         }
     }
 }
