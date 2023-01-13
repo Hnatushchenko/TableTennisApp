@@ -1,11 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using TableTennisApp.Data.Constants;
 using TableTennisApp.Data.ViewModels;
-using TableTennisApp.Enums;
 using TableTennisApp.Models;
 using TableTennisApp.Services;
 

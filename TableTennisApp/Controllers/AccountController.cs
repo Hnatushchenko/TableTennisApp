@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using TableTennisApp.Models;
 using Microsoft.AspNetCore.Authentication;
 using System.Net;
-using TableTennisApp.Exceptions;
 using Microsoft.AspNetCore.Identity;
 using TableTennisApp.Data.ViewModels;
 using TableTennisApp.Data.Constants;
@@ -17,13 +16,11 @@ namespace TableTennisApp.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly IPlayersService _playerService;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
 
-        public AccountController(IPlayersService playerService, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager)
+        public AccountController(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager)
         {
-            _playerService = playerService;
             _signInManager = signInManager;
             _userManager = userManager;
         }

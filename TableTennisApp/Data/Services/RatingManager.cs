@@ -1,6 +1,4 @@
-﻿using TableTennisApp.Repository;
-
-namespace TableTennisApp.Models
+﻿namespace TableTennisApp.Models
 {
     public class RatingManager : IRatingManager
     {

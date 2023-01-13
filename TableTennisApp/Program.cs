@@ -5,8 +5,8 @@ using System;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
 using TableTennisApp.Data.Constants;
+using TableTennisApp.Data.Repository;
 using TableTennisApp.Models;
-using TableTennisApp.Repository;
 using TableTennisApp.Services;
 
 namespace TableTennisApp
@@ -20,10 +20,9 @@ namespace TableTennisApp
             builder.Services.AddControllersWithViews().AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.Encoder = JavaScriptEncoder.Create(UnicodeRanges.All);
-                options.JsonSerializerOptions.WriteIndented = true;
             });
 
-            IdentityBuilder identityBuilder = builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
+            builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
             {
                 options.User.RequireUniqueEmail = true;
                 options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789ÀàÁáÂâÃã¥´ÄäÅåªºÆæÇçÈè²³¯¿ÉéÊêËëÌìÍíÎîÏïĞğÑñÒòÓóÔôÕõÖö×÷ØøÙùüŞşßÿ-._ ";
@@ -40,16 +39,7 @@ namespace TableTennisApp
               .AddRoleManager<RoleManager<ApplicationRole>>();
 
             
-
-            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(options =>
-                {
-                    options.ExpireTimeSpan = TimeSpan.FromDays(365);
-                    options.Cookie.MaxAge = TimeSpan.FromDays(365);
-                });
-
             string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-            builder.Services.AddTransient<IPlayersService, PlayersService>();
             builder.Services.AddTransient<IQueueManager, QueueManager>();
             builder.Services.AddTransient<IGameService, GameService>();
             builder.Services.AddTransient<IQueueItemService, QueueItemService>();
@@ -84,41 +74,38 @@ namespace TableTennisApp
 
         private static async Task CreateRolesAsync(IServiceProvider serviceProvider)
         {
-            using (var scope = serviceProvider.CreateScope())
+            using var scope = serviceProvider.CreateScope();
+            var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
+            var userManager = scope.ServiceProvider.GetRequiredService<ApplicationUserManager>();
+            IdentityResult roleResult;
+
+            foreach (var roleName in UserRoles.AllRoles)
             {
-                var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
-                var userManager = scope.ServiceProvider.GetRequiredService<ApplicationUserManager>();
-                IdentityResult roleResult;
-
-                foreach (var roleName in UserRoles.AllRoles)
+                var roleExists = await roleManager.RoleExistsAsync(roleName);
+                if (!roleExists)
                 {
-                    var roleExists = await roleManager.RoleExistsAsync(roleName);
-                    if (!roleExists)
-                    {
-                        roleResult = await roleManager.CreateAsync(new ApplicationRole(roleName));
-                    }
+                    roleResult = await roleManager.CreateAsync(new ApplicationRole(roleName));
                 }
+            }
 
-                var admin = new ApplicationUser
+            var admin = new ApplicationUser
+            {
+                UserName = "Àíäğ³é Ãíàòóùåíêî",
+                Email = "gnatushenko.andrij@gmail.com",
+            };
+
+            string adminPassword = "123123Aa";
+            var user = await userManager.FindByEmailAsync(admin.Email);
+
+            if (user == null)
+            {
+                var createPowerUser = await userManager.CreateAsync(admin, adminPassword);
+                if (createPowerUser.Succeeded)
                 {
-                    UserName = "Àíäğ³é Ãíàòóùåíêî",
-                    Email = "gnatushenko.andrij@gmail.com",
-                };
-
-                string adminPassword = "123123Aa";
-                var user = await userManager.FindByEmailAsync(admin.Email);
-
-                if (user == null)
-                {
-                    var createPowerUser = await userManager.CreateAsync(admin, adminPassword);
-                    if (createPowerUser.Succeeded)
-                    {
-                        await userManager.AddToRoleAsync(admin, UserRoles.Admin);
-                        await userManager.AddToRoleAsync(admin, UserRoles.Referee);
-                        await userManager.AddToRoleAsync(admin, UserRoles.User);
-                    }
+                    await userManager.AddToRoleAsync(admin, UserRoles.Admin);
+                    await userManager.AddToRoleAsync(admin, UserRoles.Referee);
+                    await userManager.AddToRoleAsync(admin, UserRoles.User);
                 }
-                
             }
         }
     }

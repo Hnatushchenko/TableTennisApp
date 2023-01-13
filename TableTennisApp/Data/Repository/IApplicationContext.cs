@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TableTennisApp.Models;
 
-namespace TableTennisApp.Repository
+namespace TableTennisApp.Data.Repository
 {
     public interface IApplicationContext
     {

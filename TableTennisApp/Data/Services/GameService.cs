@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TableTennisApp.Data.ViewModels;
 using TableTennisApp.Models;
-using TableTennisApp.Repository;
+using TableTennisApp.Data.Repository;
 
 namespace TableTennisApp.Services
 {

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Xml;
 using TableTennisApp.Models;
 
-namespace TableTennisApp.Repository
+namespace TableTennisApp.Data.Repository
 {
     public class ApplicationContext : IdentityDbContext<ApplicationUser, ApplicationRole, Guid>, IApplicationContext
     {
