@@ -78,19 +78,19 @@ namespace TableTennisApp.Controllers
             existingUser.TotalNumberOfGames = updatedUser.TotalNumberOfGames;
             existingUser.Rating = updatedUser.Rating;
             existingUser.Email = updatedUser.Email;
-            var result = await _userManager.UpdateAsync(existingUser);
 
-            if (result.Succeeded == false)
+            foreach (var role in UserRoles.AllRoles)
             {
-                TempData["Errors"] = result.Errors.Select(error => error.Description);
-                return View(updatedUser);
+                if (updatedUser.Roles.Contains(role))
+                {
+                    await _userManager.AddToRoleAsync(existingUser, role);
+                }
+                else
+                {
+                    await _userManager.RemoveFromRoleAsync(existingUser, role);
+                }
             }
-
-            await _userManager.RemoveFromRolesAsync(existingUser, UserRoles.AllRoles);
-            foreach (string role in updatedUser.Roles)
-            {
-                await _userManager.AddToRoleAsync(existingUser, role);
-            }
+            await _userManager.UpdateAsync(existingUser);
             return RedirectToAction(nameof(Index));
         }
 
