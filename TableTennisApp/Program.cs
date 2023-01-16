@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
-using TableTennisApp.Data.Constants;
+using TableTennisApp.Data.Extensions;
 using TableTennisApp.Data.Repository;
 using TableTennisApp.Models;
 using TableTennisApp.Services;
@@ -49,7 +49,8 @@ namespace TableTennisApp
 
             var app = builder.Build();
 
-            await CreateRolesAsync(app.Services);
+            await app.CreateInitialRolesAsync();
+            await app.CreateDefaultAdminAsync();
 
             if (!app.Environment.IsDevelopment())
             {
@@ -70,43 +71,6 @@ namespace TableTennisApp
                 pattern: "{controller=Home}/{action=Index}/{id?}");
 
             app.Run();
-        }
-
-        private static async Task CreateRolesAsync(IServiceProvider serviceProvider)
-        {
-            using var scope = serviceProvider.CreateScope();
-            var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
-            var userManager = scope.ServiceProvider.GetRequiredService<ApplicationUserManager>();
-            IdentityResult roleResult;
-
-            foreach (var roleName in UserRoles.AllRoles)
-            {
-                var roleExists = await roleManager.RoleExistsAsync(roleName);
-                if (!roleExists)
-                {
-                    roleResult = await roleManager.CreateAsync(new ApplicationRole(roleName));
-                }
-            }
-
-            var admin = new ApplicationUser
-            {
-                UserName = "јндр≥й √натущенко",
-                Email = "gnatushenko.andrij@gmail.com",
-            };
-
-            string adminPassword = "123123Aa";
-            var user = await userManager.FindByEmailAsync(admin.Email);
-
-            if (user == null)
-            {
-                var createPowerUser = await userManager.CreateAsync(admin, adminPassword);
-                if (createPowerUser.Succeeded)
-                {
-                    await userManager.AddToRoleAsync(admin, UserRoles.Admin);
-                    await userManager.AddToRoleAsync(admin, UserRoles.Referee);
-                    await userManager.AddToRoleAsync(admin, UserRoles.User);
-                }
-            }
         }
     }
 }
