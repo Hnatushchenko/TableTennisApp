@@ -23,7 +23,7 @@
     <tbody>
         @foreach (var user in @Model)
         {
-            <tr>
+            <tr id="@user.Id">
                 <td>@user.UserName</td>
                 <td>@user.Email</td>
                 <td>@string.Join(", ", @user.Roles)</td>
@@ -31,9 +31,25 @@
                 <td>
                     <a class="btn btn-info" asp-action="Details" asp-route-id="@user.Id">Деталі</a>
                     <a class="btn btn-warning" asp-action="Edit" asp-route-id="@user.Id">Редагувати</a>
-                    <a class="btn btn-danger" asp-action="Delete" asp-route-id="@user.Id">Видалити</a>
+                    <button class="btn btn-danger" onclick="deleteUser('@user.Id')">Видалити</button>
                 </td>
             </tr> 
         }
     </tbody>
 </table>
+
+
+@section Scripts {
+    <script>
+        async function deleteUser(id) {
+            let responce = await fetch(`/Users/Delete/${id}`, {
+                method: 'DELETE'
+            });
+            if (responce.ok) {
+                const row = document.getElementById(id);
+                const tableBody = row.parentNode;                
+                tableBody.removeChild(row);
+            }
+        }
+    </script>
+}

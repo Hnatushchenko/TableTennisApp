@@ -94,18 +94,16 @@ namespace TableTennisApp.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        [Route("Users/Delete/{id:guid}")]
-        [HttpGet]
-        public async Task<IActionResult> Delete([FromRoute] Guid id)
+        [Route("Users/Delete/{id}")]
+        [HttpDelete]
+        public async Task<IActionResult> Delete([FromRoute] string id)
         {
-            var user = await _userManager.FindByIdAsync(id.ToString());
-            if (user is null)
-            {
-                return View("NotFound");
-            }
+            var user = await _userManager.FindByIdAsync(id);
 
+            if (user is null) return NotFound();
+            
             await _userManager.DeleteAsync(user);
-            return RedirectToAction(nameof(Index));
+            return NoContent();
         }
     }
 }
