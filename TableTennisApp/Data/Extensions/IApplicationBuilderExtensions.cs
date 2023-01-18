@@ -32,8 +32,8 @@ namespace TableTennisApp.Data.Extensions
 
             var admin = new ApplicationUser
             {
-                UserName = "Андрій Гнатущенко",
-                Email = "gnatushenko.andrij@gmail.com",
+                UserName = "Andrii Hnatushchenko",
+                Email = "hnatushenko.andrij@gmail.com",
             };
 
             string adminPassword = "123123Aa";

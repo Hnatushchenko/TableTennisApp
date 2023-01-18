@@ -1,7 +1,10 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Globalization;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
 using TableTennisApp.Data.Extensions;
@@ -17,10 +20,15 @@ namespace TableTennisApp
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            builder.Services.AddControllersWithViews().AddJsonOptions(options =>
-            {
-                options.JsonSerializerOptions.Encoder = JavaScriptEncoder.Create(UnicodeRanges.All);
-            });
+            builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+
+            builder.Services.AddControllersWithViews()
+                .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
+                .AddDataAnnotationsLocalization()
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.Encoder = JavaScriptEncoder.Create(UnicodeRanges.All);
+                });
 
             builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
             {
@@ -46,8 +54,24 @@ namespace TableTennisApp
             builder.Services.AddTransient<IRatingManager, RatingManager>();
             builder.Services.AddDbContext<ApplicationContext>(options => options.UseSqlServer(connectionString));
             builder.Services.AddScoped<IApplicationContext>(provider => provider.GetRequiredService<ApplicationContext>());
+            
 
             var app = builder.Build();
+
+            var supportedCultures = new[]
+            {
+                new CultureInfo("uk"),
+                new CultureInfo("da"),
+            };
+
+            var requestLocalizationOptions = new RequestLocalizationOptions
+            {
+                //DefaultRequestCulture = new RequestCulture("uk"),
+                SupportedCultures = supportedCultures,
+                SupportedUICultures = supportedCultures
+            };
+
+            app.UseRequestLocalization(requestLocalizationOptions);
 
             await app.CreateInitialRolesAsync();
             await app.CreateDefaultAdminAsync();

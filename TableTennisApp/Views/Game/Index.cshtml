@@ -1,22 +1,24 @@
 ﻿@model IEnumerable<Game>
 
+@inject IViewLocalizer _localizer
+
 @{
-    ViewData["Title"] = "Партії";
+    ViewData["Title"] = _localizer["Game History"];
 }
 
 <div class="row text-center">
     <h3>
-        Зіграні партії
+        @_localizer["Game History"]
     </h3>
 </div>
 
 <table class="table table-striped table-hover table-bordered">
     <thead class="table-light">
         <tr>
-            <th>Переможець</th>
-            <th>Той, хто програв</th>
-            <th>Рахунок</th>
-            <th>Дії</th>
+            <th>@_localizer["Winner"]</th>
+            <th>@_localizer["Loser"]</th>
+            <th>@_localizer["Score"]</th>
+            <th>@_localizer["Actions"]</th>
         </tr>
     </thead>
     <tbody>
@@ -36,7 +38,7 @@
                 <td>@game.WinnerScore:@game.LoserScore</td>
                 <td>
                     <button class="btn btn-danger" onclick="deleteGame('@game.Id')">
-                        Видалити
+                        @_localizer["Delete"]
                     </button>
                 </td>
             </tr>

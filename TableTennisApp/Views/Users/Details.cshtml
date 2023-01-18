@@ -1,7 +1,9 @@
 ﻿@model UserDetailsVM
 
+@inject IViewLocalizer _localizer
+
 @{
-    ViewData["Title"] = @Model?.UserName;
+    ViewData["Title"] = @Model.UserName;
 }
 
 <div class="row text-center">
@@ -16,24 +18,24 @@
         <td>@Model.Id</td>
     </tr>
     <tr>
-        <th>Ім'я та прізвище</th>
+        <th>@_localizer["FullName"]</th>
         <td>@Model.UserName</td>
     </tr>
     <tr>
-        <th>Ел. адреса</th>
+        <th>@_localizer["Email"]</th>
         <td>@Model.Email</td>
     </tr>
     <tr>
-        <th>Ролі</th>
+        <th>@_localizer["Roles"]</th>
         <td>@string.Join(", ", @Model.Roles)</td>
     </tr>
     <tr>
-        <th>Рейтинг</th>
+        <th>@_localizer["Rating"]</th>
         <td>@Model.Rating</td>
     </tr>
     <tr>
-        <th>Кількість ігор</th>
-        <td>@Model.TotalNumberOfGames - <a class="btn btn-outline-success" asp-controller="Game" asp-action="Index" asp-route-userId="@Model.Id">Переглянути</a></td>
+        <th>@_localizer["Total number of games"]</th>
+        <td>@Model.TotalNumberOfGames - <a class="btn btn-outline-success" asp-controller="Game" asp-action="Index" asp-route-userId="@Model.Id">@_localizer["View"]</a></td>
     </tr>
     
 </table>

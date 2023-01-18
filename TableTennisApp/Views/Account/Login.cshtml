@@ -1,14 +1,16 @@
 ﻿@model LoginVM
 
+@inject IViewLocalizer _localizer
+
 @{ 
-    ViewData["Title"] = "Вхід";
+    ViewData["Title"] = _localizer["Log In"];
 }
 
 <div class="row">
     <div>
         <div class="text-center">
             <p>
-                <h4>Вхід</h4>
+                <h4>@_localizer["Log In"]</h4>
             </p>
         </div>
 
@@ -36,8 +38,8 @@
                     </div>
 
                     <div class="mb-3">
-                        <input class="btn btn-outline-success float-right" type="submit" value="Ввійти" />
-                        <a class="btn btn-outline-secondary float-lg-end" asp-controller="Home" asp-action="Index">Відмінити</a>
+                        <input class="btn btn-outline-success float-right" type="submit" value="@_localizer["Login"]" />
+                        <a class="btn btn-outline-secondary float-lg-end" asp-controller="Home" asp-action="Index">@_localizer["Cancel"]</a>
                     </div>
                 </form>
             </div>

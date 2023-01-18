@@ -1,14 +1,16 @@
 ﻿@model RegisterVM
 
+@inject IViewLocalizer _localizer
+
 @{ 
-    ViewData["Title"] = "Реєстрація";
+    ViewData["Title"] = _localizer["Registration"];
 }
 
 <div class="row">
     <div>
         <div class="text-center">
             <p>
-                <h4>Реєстрація</h4>
+                <h4>@_localizer["Registration"]</h4>
             </p>
         </div>
 
@@ -49,8 +51,8 @@
                     </div>
 
                     <div class="mb-3">
-                        <input class="btn btn-outline-success float-right" type="submit" value="Зареєструватися" />
-                        <a class="btn btn-outline-secondary float-lg-end" asp-controller="Account" asp-action="Login">Відмінити</a>
+                        <input class="btn btn-outline-success float-right" type="submit" value="@_localizer["Sing Up"]" />
+                        <a class="btn btn-outline-secondary float-lg-end" asp-controller="Account" asp-action="Login">@_localizer["Cancel"]</a>
                     </div>
                 </form>
             </div>

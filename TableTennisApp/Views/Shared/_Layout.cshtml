@@ -1,9 +1,14 @@
-﻿<!DOCTYPE html>
+﻿
+
+@using Microsoft.AspNetCore.Mvc.Localization;
+@inject IViewLocalizer _localizer
+    
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Настільний теніс</title>
+    <title>@ViewData["Title"] - @_localizer["Table tennis"]</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/TableTennisApp.styles.css" asp-append-version="true" />
@@ -13,7 +18,7 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Настільний теніс</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">@_localizer["Table tennis"]</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -21,15 +26,15 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">На головну</a>
+                            <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">@_localizer["Home"]</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Queue" asp-action="Index">Черга</a>
+                            <a class="nav-link text-dark" asp-controller="Queue" asp-action="Index">@_localizer["Queue"]</a>
                         </li>
                         @if (User.Identities is not null && User.IsInRole(UserRoles.Referee))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark"  asp-controller="Game" asp-action="Add">Додати партію</a>
+                                <a class="nav-link text-dark"  asp-controller="Game" asp-action="Add">@_localizer["Add game"]</a>
                             </li>
                         }
                             
@@ -37,15 +42,15 @@
                         {
                             <li class="nav-item dropdown" style="cursor: pointer;">
                                 <a class="nav-link text-dark dropdown-toggle" id="navbarDropdown"  data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i class="bi bi-gear"></i> Керувати
+                                    <i class="bi bi-gear"></i> @_localizer["Management"]
                                 </a>
 
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                     <li>
-                                        <a class="dropdown-item" asp-controller="Users" asp-action="Index"><i class="bi bi-person"></i> Користувачі</a>
+                                        <a class="dropdown-item" asp-controller="Users" asp-action="Index"><i class="bi bi-person"></i>@_localizer["Users"]</a>
                                     </li>
                                     <li>
-                                                <a class="dropdown-item" asp-controller="Game" asp-action="Index"><i class="bi bi-controller"></i> Ігри</a>
+                                                <a class="dropdown-item" asp-controller="Game" asp-action="Index"><i class="bi bi-controller"></i>@_localizer["Games"]</a>
                                     </li>
                                 </ul>
                             </li>
@@ -55,18 +60,18 @@
                     @if (User.Identity is null || User.Identity.IsAuthenticated == false)
                     {
                         <a class="btn btn-outline-success my-2 my-sm-0" asp-controller="Account" asp-action="Login">
-                            <i class="bi bi-box-arrow-in-right"></i> Вхід
+                            <i class="bi bi-box-arrow-in-right"></i> @_localizer["Log In"]
                         </a>
                         <span style="padding: 5px;"></span>
                         <a class="btn btn-outline-primary my-2 my-sm-0" asp-controller="Account" asp-action="Register">
-                            <i class="bi bi-person-plus"></i> Реєстрація
+                            <i class="bi bi-person-plus"></i> @_localizer["Sign Up"]
                         </a>
                     }
                     else
                     {     
                         <span style="padding: 5px;"></span>
                         <a class="btn btn-outline-danger my-2 my-sm-0" asp-controller="Account" asp-action="Logout">
-                            <i class="bi bi-box-arrow-in-right"></i> Вийти
+                            <i class="bi bi-box-arrow-in-right"></i> @_localizer["Quit"]
                         </a>
                     }
                 </div>
