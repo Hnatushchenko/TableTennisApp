@@ -73,5 +73,14 @@ namespace TableTennisApp.Services
             _dbContext.Games.Remove(game);
             await _dbContext.SaveChangesAsync();
         }
+
+        public async Task DeleteAllGamesByUserId(Guid userId)
+        {
+            var games = await GetAllGamesByUserIdAsync(userId);
+            foreach (var game in games)
+            {
+                await DeleteAsync(game.Id);
+            }
+        }
     }
 }

@@ -13,10 +13,12 @@ namespace TableTennisApp.Controllers
     public class UsersController : Controller
     {
         private readonly ApplicationUserManager _userManager;
+        private readonly IGameService _gameServcie;
 
-        public UsersController(ApplicationUserManager userManager)
+        public UsersController(ApplicationUserManager userManager, IGameService gameServcie)
         {
             _userManager = userManager;
+            _gameServcie = gameServcie;
         }
         public async Task<IActionResult> Index()
         {
@@ -94,14 +96,15 @@ namespace TableTennisApp.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        [Route("Users/Delete/{id}")]
+        [Route("Users/Delete/{id:guid}")]
         [HttpDelete]
-        public async Task<IActionResult> Delete([FromRoute] string id)
+        public async Task<IActionResult> Delete(Guid id)
         {
-            var user = await _userManager.FindByIdAsync(id);
+            var user = await _userManager.FindByIdAsync(id.ToString());
 
             if (user is null) return NotFound();
-            
+
+            await _gameServcie.DeleteAllGamesByUserId(id);
             await _userManager.DeleteAsync(user);
             return NoContent();
         }
